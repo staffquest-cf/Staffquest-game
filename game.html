@@ -178,17 +178,15 @@ loadProc();
 
 async function loadProc(){
 try{
-var r=user.ruolo||’’;
-var vs=[r];
-if(r===‘Cameriere’) vs=[‘Cameriere’,‘Sala’];
-if(r===‘Cuoco’)     vs=[‘Cuoco’,‘Cucina’];
-if(r===‘Barista’)   vs=[‘Barista’,‘Bar’];
-var fp=vs.map(function(v){return ‘{Ruolo}=”’+v+’”’;}).join(’,’);
-var f=encodeURIComponent(‘OR(’+fp+’)’);
-var res=await fetch(AT_URL_P+’?filterByFormula=’+f+’&fields[]=Titolo+procedura&fields[]=Ruolo&fields[]=Livello&fields[]=Percorso&fields[]=JSON+Gioco’,{headers:AT_H});
+// Carica tutte le procedure con JSON Gioco compilato
+// Quando i campi Ruolo/Percorso saranno popolati in Airtable si riattiva il filtro
+var res=await fetch(AT_URL_P+’?fields[]=Titolo+procedura&fields[]=Ruolo&fields[]=Livello&fields[]=Percorso&fields[]=JSON+Gioco&pageSize=100’,{headers:AT_H});
 if(!res.ok) throw new Error(‘API ‘+res.status);
 var d=await res.json();
-procedure=(d.records||[]).filter(function(rec){return rec.fields[‘JSON Gioco’]&&rec.fields[‘JSON Gioco’].trim().length>10;});
+// Filtra solo quelle con JSON Gioco compilato
+procedure=(d.records||[]).filter(function(rec){
+return rec.fields[‘JSON Gioco’]&&rec.fields[‘JSON Gioco’].trim().length>10;
+});
 renderMap();
 }catch(e){
 document.getElementById(‘map-loading’).innerHTML=’<div style="color:#e74c3c;font-size:11px;padding:20px;">Errore: ‘+e.message+’</div>’;
@@ -210,11 +208,26 @@ var nodes=MAP_NODES[ruolo]||MAP_NODES[‘Cameriere’];
 var pm=PERC_MAP[ruolo]||PERC_MAP[‘Cameriere’];
 
 // Raggruppa procedure per percorso
+// Se Percorso e’ vuoto, distribuisce sulle stanze disponibili in ordine
 var pp={};
+var nodeOrder=nodes.map(function(n){return Object.keys(pm).find(function(k){return pm[k]===n.id;})||’’;}).filter(Boolean);
+var unassigned=[];
 procedure.forEach(function(rec){
 var p=rec.fields[‘Percorso’]||’’;
+if(p && pm[p]){
 if(!pp[p]) pp[p]=[];
 pp[p].push(rec);
+} else {
+unassigned.push(rec);
+}
+});
+// Distribuisce le procedure senza percorso sui nodi in ordine
+unassigned.forEach(function(rec,i){
+var nodePerc=nodeOrder[i % nodeOrder.length];
+if(nodePerc){
+if(!pp[nodePerc]) pp[nodePerc]=[];
+pp[nodePerc].push(rec);
+}
 });
 
 // Posizioni pixel
