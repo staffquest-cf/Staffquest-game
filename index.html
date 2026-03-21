@@ -47,7 +47,7 @@ body{display:flex;align-items:center;justify-content:center;
 /* Entra */
 #btn{width:100%;padding:14px;border-radius:10px;font-size:14px;font-weight:bold;font-family:monospace;letter-spacing:2px;cursor:pointer;background:rgba(245,200,66,.12);color:#f5c842;border:2px solid rgba(245,200,66,.35);display:block;}
 #btn:disabled{opacity:.35;cursor:default;}
-#foot{text-align:center;font-size:8px;color:#1a2a50;letter-spacing:1px;}
+#foot{text-align:center;font-size:9px;color:#445577;letter-spacing:1px;margin-top:2px;}
 /* Dialog */
 #ov{display:none;position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:24px;}
 #ov.show{display:flex;}
@@ -136,11 +136,12 @@ body{display:flex;align-items:center;justify-content:center;
 <button id="btn" type="button" onclick="doLogin()" disabled>
   ENTRA NEL DUNGEON
 </button>
+
+<div id="foot">Proprieta di Keika &middot; StaffQuest v0.1</div>
 ```
 
   </div>
 
-  <div id="foot">Proprieta di Keika &middot; StaffQuest v0.1</div>
 </div>
 
 <!-- Dialog conferma -->
@@ -227,7 +228,7 @@ async function doLogin() {
         btn.disabled=false; return;
       }
       fetch(AT_URL+'/'+rec.id, {method:'PATCH',headers:AT_H,
-        body:JSON.stringify({fields:{'Ultima Sessione':new Date().toISOString()}})});
+        body:JSON.stringify({fields:{'Ultima Sessione':new Date().toISOString().slice(0,10)}})});
       user={id:rec.id,nome:fl['Nome']||nome,ruolo:fl['Ruolo']||role,
         classe:cls,emoji:emoji,locale:fl['Locale']||locale,
         xp:fl['XP Totale']||0,nuovo:false};
@@ -265,7 +266,7 @@ async function doSi() {
       body:JSON.stringify({fields:{
         'Nome':pN,'PIN':pin,'Ruolo':role,'Locale':pL,
         'Data Creazione':new Date().toISOString().slice(0,10),
-        'XP Totale':0,'Ultima Sessione':new Date().toISOString()
+        'XP Totale':0,'Ultima Sessione':new Date().toISOString().slice(0,10)
       }})});
     if(!cr.ok){var eb=await cr.json();throw new Error(cr.status+' '+JSON.stringify(eb));}
     var c=await cr.json();
