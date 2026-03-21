@@ -289,7 +289,7 @@ function showWel() {
 
 function goGame() {
   sessionStorage.setItem('sq_user', JSON.stringify(user));
-  alert('Login OK!\n\n'+user.nome+' - '+user.ruolo+'\nXP: '+user.xp+'\n\nProssimo step: la mappa!');
+  window.location.href = 'game.html';
 }
 </script>
 
