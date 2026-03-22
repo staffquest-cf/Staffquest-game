@@ -11,14 +11,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#050814;font-family:
 body{display:flex;justify-content:center;align-items:center}
 #root{position:relative;width:100%;max-width:430px;height:100%;display:flex;flex-direction:column}
 #ga{position:relative;flex:1;min-height:0;overflow:hidden;background:#050814}
-#ga canvas{display:block!important;image-rendering:pixelated;image-rendering:crisp-edges}
+#ga canvas{
+  display:block!important;
+  image-rendering:pixelated;
+  image-rendering:crisp-edges;
+}
 
 #hud{
   position:absolute;top:0;left:0;right:0;padding:8px 10px;pointer-events:none;z-index:20;
   display:flex;justify-content:space-between;align-items:flex-start;gap:8px
 }
 .hb{
-  background:rgba(5,13,36,.92);
+  background:rgba(5,13,36,.94);
   border:1px solid rgba(245,200,66,.28);
   border-radius:8px;
   padding:5px 9px;
@@ -32,7 +36,7 @@ body{display:flex;justify-content:center;align-items:center}
 
 #toast{
   position:absolute;bottom:98px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,.92);color:#d9deeb;font-size:9px;padding:6px 14px;border-radius:20px;
+  background:rgba(0,0,0,.92);color:#d9deeb;font-size:10px;padding:6px 14px;border-radius:20px;
   border:1px solid #2a2a3a;pointer-events:none;opacity:0;transition:opacity .3s;
   white-space:nowrap;z-index:15;max-width:90%;text-align:center
 }
@@ -127,7 +131,7 @@ body{display:flex;justify-content:center;align-items:center}
         <div class="hx" id="hx">XP 0</div>
         <div class="xbar"><div class="xfill" id="xf" style="width:0%"></div></div>
       </div>
-      <div class="hb"><div class="hw" id="hw">Percorso</div></div>
+      <div class="hb"><div class="hw" id="hw">Percorso guidato</div></div>
     </div>
 
     <div id="toast"></div>
@@ -172,7 +176,7 @@ body{display:flex;justify-content:center;align-items:center}
       </div>
       <div id="bok">
         <div class="ol">OK</div>
-        <div class="oh" id="oh">esplora</div>
+        <div class="oh" id="oh">percorso</div>
       </div>
     </div>
   </div>
@@ -183,15 +187,14 @@ body{display:flex;justify-content:center;align-items:center}
 const TW = 16;
 const GW = 15;
 const GH = 24;
-const SCALE = 2;
+const GAME_W = GW * TW;
+const GAME_H = GH * TW;
 const MAX_XP_BAR = 500;
 const STORAGE_KEYS = {
   user: 'sq_user',
-  progress: 'sq_progressi_v5'
+  progress: 'sq_progressi_v6'
 };
 
-// 0 = muro / non camminabile
-// 1 = percorso camminabile
 const PATH_MAP = [
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
@@ -219,145 +222,84 @@ const PATH_MAP = [
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
 ];
 
-// per disegnare lo sfondo/muri
-const CMAP = PATH_MAP.map(row => row.map(v => v === 1 ? 1 : 2));
-
 const ALL_MAPS = {
   Cameriere: [
-    { id: "ap",  label: "Apertura\nChiusura",     x: 7,  y: 1,  sz: 2, conn: ["sal"] },
-    { id: "sal", label: "Sala",                   x: 10, y: 4,  sz: 2, conn: ["acc"] },
-    { id: "acc", label: "Accoglienza\nCassa",     x: 4,  y: 7,  sz: 2, conn: ["ven"] },
-    { id: "ven", label: "Vendita",                x: 10, y: 10, sz: 1, conn: ["pre"] },
-    { id: "pre", label: "Gestione\nPrenotazioni", x: 4,  y: 13, sz: 1, conn: ["rec"] },
-    { id: "rec", label: "Reclami",                x: 10, y: 16, sz: 1, conn: [] }
+    { id: "ap",  label: "Apertura",      x: 7,  y: 1,  sz: 2 },
+    { id: "sal", label: "Sala",          x: 10, y: 4,  sz: 2 },
+    { id: "acc", label: "Accoglienza",   x: 4,  y: 7,  sz: 2 },
+    { id: "ven", label: "Vendita",       x: 10, y: 10, sz: 1 },
+    { id: "pre", label: "Prenotazioni",  x: 4,  y: 13, sz: 1 },
+    { id: "rec", label: "Reclami",       x: 10, y: 16, sz: 1 }
   ],
   Cuoco: [
-    { id: "ap",  label: "Apertura\nChiusura", x: 7,  y: 1,  sz: 2, conn: ["org"] },
-    { id: "org", label: "Organizzazione",     x: 10, y: 4,  sz: 2, conn: ["fun"] },
-    { id: "fun", label: "Funzionamento",      x: 4,  y: 7,  sz: 1, conn: ["ord"] },
-    { id: "ord", label: "Ordini\nFornitori",  x: 10, y: 10, sz: 2, conn: ["ser"] },
-    { id: "ser", label: "Servizio",           x: 4,  y: 13, sz: 1, conn: ["com"] },
-    { id: "com", label: "Gestione\nComande",  x: 10, y: 16, sz: 1, conn: ["ric"] },
-    { id: "ric", label: "Reclami",            x: 4,  y: 19, sz: 1, conn: [] },
-    { id: "pre", label: "Preparazioni",       x: 10, y: 22, sz: 1, conn: [] }
+    { id: "ap",  label: "Apertura",      x: 7,  y: 1,  sz: 2 },
+    { id: "org", label: "Organizzazione",x: 10, y: 4,  sz: 2 },
+    { id: "fun", label: "Funzionamento", x: 4,  y: 7,  sz: 1 },
+    { id: "ord", label: "Fornitori",     x: 10, y: 10, sz: 2 },
+    { id: "ser", label: "Servizio",      x: 4,  y: 13, sz: 1 },
+    { id: "com", label: "Comande",       x: 10, y: 16, sz: 1 },
+    { id: "ric", label: "Reclami",       x: 4,  y: 19, sz: 1 }
   ],
   Barista: [
-    { id: "ap",   label: "Apertura\nChiusura", x: 7,  y: 1,  sz: 2, conn: ["mag"] },
-    { id: "mag",  label: "Magazzino",          x: 10, y: 4,  sz: 2, conn: ["prep"] },
-    { id: "prep", label: "Preparazioni",       x: 4,  y: 7,  sz: 1, conn: ["org"] },
-    { id: "org",  label: "Organizzazione",     x: 10, y: 10, sz: 1, conn: ["ser"] },
-    { id: "ser",  label: "Servizio",           x: 4,  y: 13, sz: 2, conn: ["rec"] },
-    { id: "rec",  label: "Reclami",            x: 10, y: 16, sz: 1, conn: [] }
+    { id: "ap",   label: "Apertura",      x: 7,  y: 1,  sz: 2 },
+    { id: "mag",  label: "Magazzino",     x: 10, y: 4,  sz: 2 },
+    { id: "prep", label: "Preparazioni",  x: 4,  y: 7,  sz: 1 },
+    { id: "org",  label: "Organizzazione",x: 10, y: 10, sz: 1 },
+    { id: "ser",  label: "Servizio",      x: 4,  y: 13, sz: 2 },
+    { id: "rec",  label: "Reclami",       x: 10, y: 16, sz: 1 }
   ]
 };
 
 const ALL_QUESTS = {
-  ap: {
-    titolo: "Apertura e Chiusura",
-    scenario: "Sono le 8:00. Sei il primo ad arrivare al locale.",
-    quiz: [
-      { d: "Senti odore di gas vicino ai fornelli. Cosa fai?", o: ["Chiudo il gas, apro le finestre e chiamo il responsabile","Accendo i fornelli per controllare","Aspetto che passi","Apro solo le finestre"], r: "Chiudo il gas, apro le finestre e chiamo il responsabile", fb: "Corretto. Prima sicurezza, poi comunicazione." },
-      { d: "Il frigo segna 6 gradi. Cosa fai?", o: ["Abbasso il termostato e registro la temperatura","Aspetto che scenda","Svuoto il frigo","Non faccio niente"], r: "Abbasso il termostato e registro la temperatura", fb: "Giusto. Va corretta e registrata la temperatura." },
-      { d: "Quando firmi il registro HACCP?", o: ["Ogni mattina prima di iniziare","Solo se ci sono problemi","Ogni settimana","Quando lo chiede il responsabile"], r: "Ogni mattina prima di iniziare", fb: "Esatto. Il controllo va fatto all’inizio." }
-    ]
-  },
-  sal: {
-    titolo: "Servizio Sala",
-    scenario: "È sabato sera e il locale è pieno.",
-    quiz: [
-      { d: "Un cliente chiede un piatto non disponibile. Cosa fai?", o: ["Mi scuso e propongo un’alternativa","Dico solo che non c’è e vado via","Invento una scusa","Lo mando a scegliere da solo"], r: "Mi scuso e propongo un’alternativa", fb: "Bene. Scuse e alternativa risolvono meglio la situazione." },
-      { d: "Il conto non torna, mancano 10 euro. Cosa fai?", o: ["Riverifico e segnalo al responsabile","Chiudo il conto lo stesso","Metto 10 euro di tasca mia","Ignoro la differenza"], r: "Riverifico e segnalo al responsabile", fb: "Corretto. La verifica viene prima." }
-    ]
-  },
-  acc: {
-    titolo: "Accoglienza e Cassa",
-    scenario: "Un cliente entra senza prenotazione.",
-    quiz: [
-      { d: "Come accogli il cliente?", o: ["Lo saluto, verifico disponibilità e lo accompagno","Lo ignoro finché non si siede","Lo mando al bancone","Gli chiedo di tornare dopo"], r: "Lo saluto, verifico disponibilità e lo accompagno", fb: "Esatto. Accoglienza chiara e professionale." }
-    ]
-  },
-  ven: {
-    titolo: "Vendita",
-    scenario: "Un cliente sembra indeciso sul dessert.",
-    quiz: [
-      { d: "Come fai upselling?", o: ["Descrivo il dessert del giorno con entusiasmo","Non dico niente","Dico solo i prezzi","Porto il menu e vado via"], r: "Descrivo il dessert del giorno con entusiasmo", fb: "Giusto. La descrizione guida la scelta." }
-    ]
-  },
-  pre: {
-    titolo: "Gestione Prenotazioni",
-    scenario: "Un cliente chiama per prenotare.",
-    quiz: [
-      { d: "Il cliente ha un’allergia. Cosa annoti?", o: ["Nome, numero persone e allergia da comunicare alla cucina","Solo nome e numero persone","Solo l’allergia","Non prendo note"], r: "Nome, numero persone e allergia da comunicare alla cucina", fb: "Corretto. L’informazione va raccolta bene e passata alla cucina." }
-    ]
-  },
-  rec: {
-    titolo: "Gestione Reclami",
-    scenario: "Un cliente si lamenta del piatto davanti a tutti.",
-    quiz: [
-      { d: "Come reagisci al reclamo?", o: ["Mi scuso, ritiro il piatto e chiamo il responsabile","Dico che non è possibile","Offro uno sconto e vado via","Ignoro il cliente"], r: "Mi scuso, ritiro il piatto e chiamo il responsabile", fb: "Esatto. Ascolto, azione e supporto." }
-    ]
-  },
-  org: {
-    titolo: "Organizzazione",
-    scenario: "Inizio turno.",
-    quiz: [
-      { d: "Come organizzi la postazione?", o: ["Controllo scorte, pulisco e preparo gli strumenti","Aspetto il collega","Inizio a lavorare subito","Chiedo al responsabile"], r: "Controllo scorte, pulisco e preparo gli strumenti", fb: "Corretto. L’ordine iniziale evita errori dopo." }
-    ]
-  },
-  fun: {
-    titolo: "Funzionamento Attrezzature",
-    scenario: "Un macchinario non funziona correttamente.",
-    quiz: [
-      { d: "Il friggitore fa un rumore strano. Cosa fai?", o: ["Spengo, segnalo al responsabile e non lo uso","Continuo con cautela","Chiamo un tecnico da solo","Ignoro il rumore"], r: "Spengo, segnalo al responsabile e non lo uso", fb: "Giusto. La sicurezza viene prima." }
-    ]
-  },
-  ord: {
-    titolo: "Ordini Fornitori",
-    scenario: "Arriva la merce dal fornitore.",
-    quiz: [
-      { d: "Come controlli la merce?", o: ["Verifico quantità, qualità e temperature prima di firmare","Firmo subito","Metto tutto in magazzino e controllo dopo","Chiedo al fornitore"], r: "Verifico quantità, qualità e temperature prima di firmare", fb: "Esatto. Il controllo al ricevimento è obbligatorio." }
-    ]
-  },
-  ser: {
-    titolo: "Servizio",
-    scenario: "È il momento del rush.",
-    quiz: [
-      { d: "Arrivano 4 comande insieme. Come gestisci?", o: ["Organizzo per tavolo e tempo, comunico con la brigata","Inizio con la prima","Chiedo al responsabile","Rallento per non sbagliare"], r: "Organizzo per tavolo e tempo, comunico con la brigata", fb: "Corretto. Organizzazione e comunicazione." }
-    ]
-  },
-  com: {
-    titolo: "Gestione Comande",
-    scenario: "Una comanda è illeggibile.",
-    quiz: [
-      { d: "Non riesci a leggere la comanda. Cosa fai?", o: ["Chiamo subito chi l’ha scritta per chiarire","Preparo quello che mi sembra probabile","Aspetto che vengano","Butto la comanda"], r: "Chiamo subito chi l’ha scritta per chiarire", fb: "Giusto. Si chiarisce subito." }
-    ]
-  },
-  ric: {
-    titolo: "Reclami Cucina",
-    scenario: "Un piatto torna in cucina freddo.",
-    quiz: [
-      { d: "Il piatto è tornato freddo. Cosa fai?", o: ["Lo sistemo e avviso il responsabile","Lo rimando senza dire niente","Dico che è colpa del cameriere","Preparo un altro piatto senza avvisare"], r: "Lo sistemo e avviso il responsabile", fb: "Corretto. Serve trasparenza." }
-    ]
-  },
-  mag: {
-    titolo: "Magazzino",
-    scenario: "Fai l’inventario del bar.",
-    quiz: [
-      { d: "Trovi una bottiglia scaduta. Cosa fai?", o: ["La separo, la segno e avviso il responsabile","La butto senza dire niente","La uso lo stesso","La nascondo in fondo"], r: "La separo, la segno e avviso il responsabile", fb: "Esatto. Va isolata e segnalata." }
-    ]
-  },
-  prep: {
-    titolo: "Preparazioni",
-    scenario: "Prepari il banco per il servizio.",
-    quiz: [
-      { d: "Come prepari la macchina del caffè?", o: ["Pulisco il gruppo, faccio un flush e calibro la macinatura","Accendo e aspetto","Uso quella del turno precedente","Chiedo al collega"], r: "Pulisco il gruppo, faccio un flush e calibro la macinatura", fb: "Giusto. Pulizia e calibrazione sono fondamentali." }
-    ]
-  }
+  ap: { titolo: "Apertura e Chiusura", scenario: "Sono le 8:00. Sei il primo ad arrivare al locale.", quiz: [
+    { d: "Senti odore di gas vicino ai fornelli. Cosa fai?", o: ["Chiudo il gas, apro le finestre e chiamo il responsabile","Accendo i fornelli per controllare","Aspetto che passi","Apro solo le finestre"], r: "Chiudo il gas, apro le finestre e chiamo il responsabile", fb: "Corretto. Prima sicurezza, poi comunicazione." },
+    { d: "Il frigo segna 6 gradi. Cosa fai?", o: ["Abbasso il termostato e registro la temperatura","Aspetto che scenda","Svuoto il frigo","Non faccio niente"], r: "Abbasso il termostato e registro la temperatura", fb: "Giusto. Va corretta e registrata la temperatura." },
+    { d: "Quando firmi il registro HACCP?", o: ["Ogni mattina prima di iniziare","Solo se ci sono problemi","Ogni settimana","Quando lo chiede il responsabile"], r: "Ogni mattina prima di iniziare", fb: "Esatto. Il controllo va fatto all’inizio." }
+  ]},
+  sal: { titolo: "Servizio Sala", scenario: "È sabato sera e il locale è pieno.", quiz: [
+    { d: "Un cliente chiede un piatto non disponibile. Cosa fai?", o: ["Mi scuso e propongo un’alternativa","Dico solo che non c’è e vado via","Invento una scusa","Lo mando a scegliere da solo"], r: "Mi scuso e propongo un’alternativa", fb: "Bene. Scuse e alternativa risolvono meglio la situazione." },
+    { d: "Il conto non torna, mancano 10 euro. Cosa fai?", o: ["Riverifico e segnalo al responsabile","Chiudo il conto lo stesso","Metto 10 euro di tasca mia","Ignoro la differenza"], r: "Riverifico e segnalo al responsabile", fb: "Corretto. La verifica viene prima." }
+  ]},
+  acc: { titolo: "Accoglienza e Cassa", scenario: "Un cliente entra senza prenotazione.", quiz: [
+    { d: "Come accogli il cliente?", o: ["Lo saluto, verifico disponibilità e lo accompagno","Lo ignoro finché non si siede","Lo mando al bancone","Gli chiedo di tornare dopo"], r: "Lo saluto, verifico disponibilità e lo accompagno", fb: "Esatto. Accoglienza chiara e professionale." }
+  ]},
+  ven: { titolo: "Vendita", scenario: "Un cliente sembra indeciso sul dessert.", quiz: [
+    { d: "Come fai upselling?", o: ["Descrivo il dessert del giorno con entusiasmo","Non dico niente","Dico solo i prezzi","Porto il menu e vado via"], r: "Descrivo il dessert del giorno con entusiasmo", fb: "Giusto. La descrizione guida la scelta." }
+  ]},
+  pre: { titolo: "Gestione Prenotazioni", scenario: "Un cliente chiama per prenotare.", quiz: [
+    { d: "Il cliente ha un’allergia. Cosa annoti?", o: ["Nome, numero persone e allergia da comunicare alla cucina","Solo nome e numero persone","Solo l’allergia","Non prendo note"], r: "Nome, numero persone e allergia da comunicare alla cucina", fb: "Corretto. L’informazione va raccolta bene e passata alla cucina." }
+  ]},
+  rec: { titolo: "Gestione Reclami", scenario: "Un cliente si lamenta del piatto davanti a tutti.", quiz: [
+    { d: "Come reagisci al reclamo?", o: ["Mi scuso, ritiro il piatto e chiamo il responsabile","Dico che non è possibile","Offro uno sconto e vado via","Ignoro il cliente"], r: "Mi scuso, ritiro il piatto e chiamo il responsabile", fb: "Esatto. Ascolto, azione e supporto." }
+  ]},
+  org: { titolo: "Organizzazione", scenario: "Inizio turno.", quiz: [
+    { d: "Come organizzi la postazione?", o: ["Controllo scorte, pulisco e preparo gli strumenti","Aspetto il collega","Inizio a lavorare subito","Chiedo al responsabile"], r: "Controllo scorte, pulisco e preparo gli strumenti", fb: "Corretto. L’ordine iniziale evita errori dopo." }
+  ]},
+  fun: { titolo: "Funzionamento Attrezzature", scenario: "Un macchinario non funziona correttamente.", quiz: [
+    { d: "Il friggitore fa un rumore strano. Cosa fai?", o: ["Spengo, segnalo al responsabile e non lo uso","Continuo con cautela","Chiamo un tecnico da solo","Ignoro il rumore"], r: "Spengo, segnalo al responsabile e non lo uso", fb: "Giusto. La sicurezza viene prima." }
+  ]},
+  ord: { titolo: "Ordini Fornitori", scenario: "Arriva la merce dal fornitore.", quiz: [
+    { d: "Come controlli la merce?", o: ["Verifico quantità, qualità e temperature prima di firmare","Firmo subito","Metto tutto in magazzino e controllo dopo","Chiedo al fornitore"], r: "Verifico quantità, qualità e temperature prima di firmare", fb: "Esatto. Il controllo al ricevimento è obbligatorio." }
+  ]},
+  ser: { titolo: "Servizio", scenario: "È il momento del rush.", quiz: [
+    { d: "Arrivano 4 comande insieme. Come gestisci?", o: ["Organizzo per tavolo e tempo, comunico con la brigata","Inizio con la prima","Chiedo al responsabile","Rallento per non sbagliare"], r: "Organizzo per tavolo e tempo, comunico con la brigata", fb: "Corretto. Organizzazione e comunicazione." }
+  ]},
+  com: { titolo: "Gestione Comande", scenario: "Una comanda è illeggibile.", quiz: [
+    { d: "Non riesci a leggere la comanda. Cosa fai?", o: ["Chiamo subito chi l’ha scritta per chiarire","Preparo quello che mi sembra probabile","Aspetto che vengano","Butto la comanda"], r: "Chiamo subito chi l’ha scritta per chiarire", fb: "Giusto. Si chiarisce subito." }
+  ]},
+  ric: { titolo: "Reclami Cucina", scenario: "Un piatto torna in cucina freddo.", quiz: [
+    { d: "Il piatto è tornato freddo. Cosa fai?", o: ["Lo sistemo e avviso il responsabile","Lo rimando senza dire niente","Dico che è colpa del cameriere","Preparo un altro piatto senza avvisare"], r: "Lo sistemo e avviso il responsabile", fb: "Corretto. Serve trasparenza." }
+  ]},
+  mag: { titolo: "Magazzino", scenario: "Fai l’inventario del bar.", quiz: [
+    { d: "Trovi una bottiglia scaduta. Cosa fai?", o: ["La separo, la segno e avviso il responsabile","La butto senza dire niente","La uso lo stesso","La nascondo in fondo"], r: "La separo, la segno e avviso il responsabile", fb: "Esatto. Va isolata e segnalata." }
+  ]},
+  prep: { titolo: "Preparazioni", scenario: "Prepari il banco per il servizio.", quiz: [
+    { d: "Come prepari la macchina del caffè?", o: ["Pulisco il gruppo, faccio un flush e calibro la macinatura","Accendo e aspetto","Uso quella del turno precedente","Chiedo al collega"], r: "Pulisco il gruppo, faccio un flush e calibro la macinatura", fb: "Giusto. Pulizia e calibrazione sono fondamentali." }
+  ]}
 };
 
 function safeParse(raw, fallback) {
-  try { return raw ? JSON.parse(raw) : fallback; }
-  catch { return fallback; }
+  try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
 }
 function loadStoredUser() {
   const stored = safeParse(localStorage.getItem(STORAGE_KEYS.user), null) || safeParse(sessionStorage.getItem(STORAGE_KEYS.user), null);
@@ -403,6 +345,23 @@ function hasBadge(key) { return !!state.progress.badges[key]; }
 function setBadge(key) { state.progress.badges[key] = true; persistProgress(); }
 function qs(id) { return document.getElementById(id); }
 
+function getQuestOrder(role) {
+  return (ALL_MAPS[role] || ALL_MAPS.Cameriere).map(n => n.id);
+}
+function getCurrentQuestId() {
+  const order = getQuestOrder(state.user.ruolo);
+  for (const id of order) {
+    if (!isCompleted(id)) return id;
+  }
+  return null;
+}
+function isUnlocked(nodeId) {
+  const order = getQuestOrder(state.user.ruolo);
+  const current = getCurrentQuestId();
+  if (!current) return true;
+  return nodeId === current || isCompleted(nodeId);
+}
+
 function updateHUD() {
   qs('hn').textContent = `${state.user.nome} · ${state.user.ruolo}`;
   qs('hx').textContent = `XP ${state.user.xp}`;
@@ -416,7 +375,6 @@ function toast(msg, dur = 2600) {
   clearTimeout(window.__sqToastTimer);
   window.__sqToastTimer = setTimeout(() => { el.style.opacity = '0'; }, dur);
 }
-
 function showBadge(icon, title, subtitle) {
   qs('bi').textContent = icon;
   qs('bt').textContent = title;
@@ -426,20 +384,17 @@ function showBadge(icon, title, subtitle) {
   clearTimeout(window.__sqBadgeTimer);
   window.__sqBadgeTimer = setTimeout(() => { el.classList.remove('show'); }, 2600);
 }
-
 function checkBadgeUnlocks() {
   if (state.user.xp >= 100 && !hasBadge('bdg1')) { setBadge('bdg1'); setTimeout(() => showBadge('🥉', 'Badge Bronzo', 'Prime sfide superate'), 350); }
   if (state.user.xp >= 250 && !hasBadge('bdg2')) { setBadge('bdg2'); setTimeout(() => showBadge('🥈', 'Badge Argento', 'Stai crescendo'), 350); }
-  if (state.user.xp >= 500 && !hasBadge('bdg3')) { setBadge('bdg3'); setTimeout(() => showBadge('🥇', 'Badge Oro', 'Maestro del percorso'), 350); }
+  if (state.user.xp >= 500 && !hasBadge('bdg3')) { setBadge('bdg3'); setTimeout(() => showBadge('🥇', 'Badge Oro', 'Percorso completato'), 350); }
 }
-
 function closeResult() { qs('result').classList.remove('show'); }
 qs('btn-res').addEventListener('click', closeResult);
 
 function openSage(nodeId) {
   const quest = ALL_QUESTS[nodeId];
   if (!quest) { toast('Quiz non trovato'); return; }
-
   state.ui.sageOpen = true;
   state.ui.currentNodeId = nodeId;
   state.ui.currentQuiz = quest.quiz;
@@ -455,19 +410,15 @@ function openSage(nodeId) {
 
   renderSageQuestion();
 }
-
 function renderSageQuestion() {
   state.ui.answered = false;
   const q = state.ui.currentQuiz[state.ui.currentQuestionIndex];
   if (!q) return;
-
   qs('sage-q').textContent = q.d;
   qs('sage-prog').textContent = `Domanda ${state.ui.currentQuestionIndex + 1} di ${state.ui.currentQuiz.length}`;
   qs('sage-sc').style.color = '#8899bb';
-
   const container = qs('sage-ch');
   container.innerHTML = '';
-
   q.o.forEach(opt => {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -477,11 +428,9 @@ function renderSageQuestion() {
     container.appendChild(btn);
   });
 }
-
 function answerSage(chosen, correct, feedback) {
   if (state.ui.answered) return;
   state.ui.answered = true;
-
   const isCorrect = chosen.trim() === correct.trim();
   if (isCorrect) state.ui.currentScore++;
 
@@ -510,7 +459,6 @@ function answerSage(chosen, correct, feedback) {
     }
   }, 1500);
 }
-
 function finishSageQuiz() {
   qs('sage-ov').classList.remove('show');
   state.ui.sageOpen = false;
@@ -534,7 +482,7 @@ function finishSageQuiz() {
   qs('res-title').textContent = passed ? 'Superato!' : 'Riprova!';
   qs('res-xp').textContent = `${correct}/${total} corrette${passed ? ` · +${xpGain} XP` : ''}`;
   qs('res-msg').textContent = passed
-    ? `Hai risposto correttamente al ${percentage}%. Continua il percorso.`
+    ? `Hai risposto correttamente al ${percentage}%. Vai alla prossima porta.`
     : 'Per superare la stanza ti serve almeno il 60%.';
   qs('result').classList.add('show');
 }
@@ -575,15 +523,13 @@ class DungeonScene extends Phaser.Scene {
     this.walkFrame = 0;
     this.idleFrame = 0;
     this.animTimer = 0;
+    this.pathGlowPulse = 0;
   }
 
   preload() {
-    const W = GW * TW;
-    const H = GH * TW;
-
     const prog = this.add.graphics();
-    const bg = this.add.rectangle(W / 2, H / 2, W, H, 0x07070f);
-    const txt = this.add.text(W / 2, H / 2 - 16, 'Carico StaffQuest...', {
+    const bg = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x07070f);
+    const txt = this.add.text(GAME_W / 2, GAME_H / 2 - 16, 'Carico StaffQuest...', {
       fontSize: '9px',
       color: '#f5c842',
       fontFamily: 'monospace'
@@ -592,9 +538,9 @@ class DungeonScene extends Phaser.Scene {
     const drawProgress = (v) => {
       prog.clear();
       prog.fillStyle(0x1a1a2e);
-      prog.fillRect(W/2 - 80, H/2 + 8, 160, 12);
+      prog.fillRect(GAME_W/2 - 80, GAME_H/2 + 8, 160, 12);
       prog.fillStyle(0xf5c842);
-      prog.fillRect(W/2 - 80, H/2 + 8, 160 * v, 12);
+      prog.fillRect(GAME_W/2 - 80, GAME_H/2 + 8, 160 * v, 12);
     };
 
     this.load.on('progress', drawProgress);
@@ -622,7 +568,7 @@ class DungeonScene extends Phaser.Scene {
 
   create() {
     state.gameScene = this;
-    this.nodes = (ALL_MAPS[state.user.ruolo] || ALL_MAPS.Cameriere).filter(n => n.y >= 0 && n.y < GH && n.x >= 0 && n.x < GW);
+    this.nodes = (ALL_MAPS[state.user.ruolo] || ALL_MAPS.Cameriere);
 
     this.createAnims();
     this.buildFloor();
@@ -632,12 +578,13 @@ class DungeonScene extends Phaser.Scene {
     this.setupJoystick();
     this.setupInteractButton();
 
-    this.cameras.main.startFollow(this.pp, true, 0.08, 0.08);
-    this.cameras.main.setZoom(SCALE);
-    this.cameras.main.setBounds(0, 0, GW * TW, GH * TW);
+    this.cameras.main.setRoundPixels(true);
+    this.cameras.main.startFollow(this.pp, true, 1, 1);
+    this.cameras.main.setZoom(2);
+    this.cameras.main.setBounds(0, 0, GAME_W, GAME_H);
 
     updateHUD();
-    setTimeout(() => toast('Segui il percorso. Il personaggio resta sul tracciato.'), 700);
+    setTimeout(() => toast('Segui il percorso illuminato fino alla porta attuale'), 700);
 
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cleanupHandlers());
     this.events.once(Phaser.Scenes.Events.DESTROY, () => this.cleanupHandlers());
@@ -658,12 +605,6 @@ class DungeonScene extends Phaser.Scene {
     const FLOOR_FRAMES = [42, 43, 55, 56];
     const WALL_FRAMES = [0, 1, 13, 14];
     const CRACK_FRAMES = [0, 1, 2, 8, 9, 10];
-    const OBJECTS = [
-      { c: 3, r: 5,  frame: 50 },
-      { c: 11,r: 9,  frame: 26 },
-      { c: 3, r: 15, frame: 50 },
-      { c: 11,r: 20, frame: 26 }
-    ];
 
     const rng = ((seed) => {
       let x = seed >>> 0;
@@ -681,41 +622,102 @@ class DungeonScene extends Phaser.Scene {
 
         if (isPath) {
           const frame = FLOOR_FRAMES[rng() % FLOOR_FRAMES.length];
-          this.add.image(x, y, 'wallsFloor', frame).setDepth(0);
+          this.add.image(x, y, 'wallsFloor', frame).setDepth(0).setPipeline('TextureTintPipeline');
 
           if ((rng() % 100) < 5) {
             const crack = CRACK_FRAMES[rng() % CRACK_FRAMES.length];
-            this.add.image(x, y, 'cracksFloor', crack).setDepth(0.4).setAlpha(0.22);
+            this.add.image(x, y, 'cracksFloor', crack).setDepth(0.4).setAlpha(0.16);
           }
         } else {
           const frame = WALL_FRAMES[rng() % WALL_FRAMES.length];
           this.add.image(x, y, 'wallsFloor', frame).setDepth(0);
 
           const dark = this.add.graphics().setDepth(0.5);
-          dark.fillStyle(0x02040a, 0.35);
+          dark.fillStyle(0x02040a, 0.46);
           dark.fillRect(x - 8, y - 8, 16, 16);
         }
       }
     }
 
-    // evidenziazione percorso
-    const pg = this.add.graphics().setDepth(0.8);
+    this.pathOverlay = this.add.graphics().setDepth(0.9);
+    this.pathCurrentOverlay = this.add.graphics().setDepth(1.0);
+    this.redrawPathHighlights();
+  }
+
+  redrawPathHighlights() {
+    const currentId = getCurrentQuestId();
+    const currentNode = this.nodes.find(n => n.id === currentId);
+
+    this.pathOverlay.clear();
+    this.pathCurrentOverlay.clear();
+
     for (let row = 0; row < GH; row++) {
       for (let col = 0; col < GW; col++) {
         if (PATH_MAP[row][col] !== 1) continue;
         const x = col * TW;
         const y = row * TW;
-        pg.fillStyle(0x6da4ff, 0.08);
-        pg.fillRect(x, y, TW, TW);
+
+        this.pathOverlay.fillStyle(0x4e6ea3, 0.10);
+        this.pathOverlay.fillRect(x, y, TW, TW);
       }
     }
 
-    OBJECTS.forEach(obj => {
-      if (PATH_MAP[obj.r]?.[obj.c] === 1) return;
-      const x = obj.c * TW + TW / 2;
-      const y = obj.r * TW + TW / 2;
-      this.add.image(x, y, 'objects', obj.frame).setDepth(2);
-    });
+    if (currentNode) {
+      const pulse = 0.12 + Math.sin(this.pathGlowPulse) * 0.05;
+      const routeCells = this.getPathToNode(currentNode.x, currentNode.y);
+      routeCells.forEach(({c,r}) => {
+        const x = c * TW;
+        const y = r * TW;
+        this.pathCurrentOverlay.fillStyle(0xf5c842, pulse);
+        this.pathCurrentOverlay.fillRect(x, y, TW, TW);
+      });
+    }
+  }
+
+  getPathToNode(targetC, targetR) {
+    const key = (c,r) => `${c},${r}`;
+    const start = { c: 7, r: 3 };
+    const queue = [start];
+    const visited = new Set([key(start.c, start.r)]);
+    const prev = new Map();
+
+    const dirs = [
+      {dc:1,dr:0},
+      {dc:-1,dr:0},
+      {dc:0,dr:1},
+      {dc:0,dr:-1}
+    ];
+
+    while (queue.length) {
+      const cur = queue.shift();
+      if (cur.c === targetC && cur.r === targetR) break;
+
+      for (const d of dirs) {
+        const nc = cur.c + d.dc;
+        const nr = cur.r + d.dr;
+        if (nr < 0 || nr >= GH || nc < 0 || nc >= GW) continue;
+        if (PATH_MAP[nr][nc] !== 1) continue;
+
+        const k = key(nc, nr);
+        if (visited.has(k)) continue;
+        visited.add(k);
+        prev.set(k, cur);
+        queue.push({ c: nc, r: nr });
+      }
+    }
+
+    const out = [];
+    let cur = { c: targetC, r: targetR };
+    if (!visited.has(key(targetC, targetR))) return out;
+
+    while (!(cur.c === start.c && cur.r === start.r)) {
+      out.push(cur);
+      cur = prev.get(key(cur.c, cur.r));
+      if (!cur) break;
+    }
+    out.push(start);
+    out.reverse();
+    return out;
   }
 
   buildNodes() {
@@ -730,44 +732,33 @@ class DungeonScene extends Phaser.Scene {
       this.nodePixels[n.id] = { x: px, y: py };
     });
 
-    const cg = this.add.graphics().setDepth(1.5);
-    this.nodes.forEach(n => {
-      const p1 = this.nodePixels[n.id];
-      n.conn.forEach(cid => {
-        const p2 = this.nodePixels[cid];
-        if (!p2) return;
-        cg.lineStyle(4, 0x27406b, 0.95);
-        cg.lineBetween(p1.x, p1.y, p2.x, p2.y);
-        cg.lineStyle(1, 0x84a7d8, 0.25);
-        cg.lineBetween(p1.x, p1.y, p2.x, p2.y);
-      });
-    });
-
     this.nodes.forEach(n => {
       const p = this.nodePixels[n.id];
       const done = isCompleted(n.id);
+      const unlocked = isUnlocked(n.id);
+      const current = getCurrentQuestId() === n.id;
+
       const big = n.sz === 2;
       const doorW = big ? 18 : 15;
       const doorH = big ? 22 : 18;
       const glowRadius = big ? 11 : 9;
 
       const glow = this.add.graphics().setDepth(2.6);
-      glow.fillStyle(done ? 0x2ecc71 : 0xf5c842, done ? 0.09 : 0.06);
-      glow.fillCircle(p.x, p.y + 2, glowRadius);
+      this.drawDoorGlow(glow, p.x, p.y, glowRadius, done, unlocked, current);
 
       const g = this.add.graphics().setDepth(3);
-      this.drawDoorNode(g, p.x, p.y, doorW, doorH, done);
+      this.drawDoorNode(g, p.x, p.y, doorW, doorH, done, unlocked, current);
 
       const label = this.add.text(
         p.x,
         p.y - (big ? 13 : 11),
         n.label,
         {
-          fontSize: '4px',
-          color: done ? '#2ecc71' : '#f5c842',
+          fontSize: '5px',
+          color: done ? '#2ecc71' : current ? '#f5c842' : unlocked ? '#c7d2f2' : '#6b7291',
           fontFamily: 'monospace',
           align: 'center',
-          backgroundColor: 'rgba(5,13,36,0.82)',
+          backgroundColor: 'rgba(5,13,36,0.90)',
           padding: { x: 2, y: 1 }
         }
       ).setOrigin(0.5, 1).setDepth(4);
@@ -780,12 +771,13 @@ class DungeonScene extends Phaser.Scene {
         isDone: done
       };
 
-      if (big && !done) {
+      if (big && (current || done)) {
         const torch = this.add.sprite(p.x + 13, p.y - 1, 'fire2', 0)
           .setDepth(4)
           .setScale(0.7);
         torch.play('torchLoop');
-        this.torches.push(torch);
+        if (!current && !done) torch.setAlpha(0.35);
+        this.torches.push({ id: n.id, sprite: torch });
       }
 
       this.doorInteract.push({
@@ -798,59 +790,89 @@ class DungeonScene extends Phaser.Scene {
     });
   }
 
-  drawDoorNode(g, x, y, w, h, done) {
+  drawDoorGlow(g, x, y, r, done, unlocked, current) {
     g.clear();
-    const frameColor = 0x46506b;
-    const innerColor = done ? 0x2d6a3d : 0x7a3f1d;
-    const accentColor = done ? 0x2ecc71 : 0xd4a520;
+    if (done) {
+      g.fillStyle(0x2ecc71, 0.10);
+      g.fillCircle(x, y + 2, r);
+    } else if (current) {
+      g.fillStyle(0xf5c842, 0.12 + Math.sin(this.pathGlowPulse) * 0.04);
+      g.fillCircle(x, y + 2, r + 1);
+    } else if (unlocked) {
+      g.fillStyle(0x90a8d8, 0.06);
+      g.fillCircle(x, y + 2, r - 1);
+    }
+  }
 
-    g.fillStyle(0x000000, 0.25);
+  drawDoorNode(g, x, y, w, h, done, unlocked, current) {
+    g.clear();
+
+    const frameColor = unlocked ? 0x46506b : 0x2a3044;
+    const innerColor = done ? 0x2d6a3d : current ? 0x7a3f1d : unlocked ? 0x5a3118 : 0x3d2a20;
+    const accentColor = done ? 0x2ecc71 : current ? 0xd4a520 : unlocked ? 0x9cb2dd : 0x666666;
+    const alpha = unlocked || done ? 1 : 0.72;
+
+    g.fillStyle(0x000000, 0.22 * alpha);
     g.fillRoundedRect(x - w/2 + 1, y - h/2 + 2, w, h, 3);
 
-    g.fillStyle(0x1b2236);
+    g.fillStyle(0x1b2236, alpha);
     g.fillRoundedRect(x - w/2 - 2, y - h/2 - 2, w + 4, h + 4, 3);
 
-    g.fillStyle(frameColor);
+    g.fillStyle(frameColor, alpha);
     g.fillRoundedRect(x - w/2, y - h/2, w, h, 3);
 
-    g.fillStyle(innerColor);
+    g.fillStyle(innerColor, alpha);
     g.fillRoundedRect(x - w/2 + 2, y - h/2 + 2, w - 4, h - 4, 2);
 
-    g.fillStyle(0x000000, 0.12);
+    g.fillStyle(0x000000, 0.10 * alpha);
     g.fillRoundedRect(x - w/2 + 4, y - h/2 + 4, w - 8, (h - 10) / 2, 2);
     g.fillRoundedRect(x - w/2 + 4, y + 1, w - 8, (h - 12) / 2, 2);
 
-    g.fillStyle(accentColor);
+    g.fillStyle(accentColor, alpha);
     g.fillCircle(x + w/2 - 5, y + 1, 2);
 
-    g.fillStyle(0xffffff, 0.08);
+    g.fillStyle(0xffffff, 0.07 * alpha);
     g.fillRect(x - w/2 + 2, y - h/2 + 2, w - 4, 2);
 
     if (done) {
       g.fillStyle(0x2ecc71, 0.95);
       g.fillCircle(x, y - h/2 - 4, 3.5);
+    } else if (current) {
+      g.lineStyle(1, 0xf5c842, 0.8);
+      g.strokeRoundedRect(x - w/2 - 3, y - h/2 - 3, w + 6, h + 6, 4);
     }
   }
 
   refreshNodes() {
+    this.redrawPathHighlights();
+    const currentId = getCurrentQuestId();
+
     this.nodes.forEach(n => {
       const info = this.nodeGfx[n.id];
       if (!info) return;
-      if (!info.isDone && isCompleted(n.id)) {
-        info.isDone = true;
-        this.drawDoorNode(info.g, info.x, info.y, info.w, info.h, true);
-        info.label.setColor('#2ecc71');
-        info.glow.clear();
-        info.glow.fillStyle(0x2ecc71, 0.09);
-        info.glow.fillCircle(info.x, info.y + 2, n.sz === 2 ? 11 : 9);
-      }
+
+      const done = isCompleted(n.id);
+      const unlocked = isUnlocked(n.id);
+      const current = currentId === n.id;
+
+      info.isDone = done;
+
+      this.drawDoorNode(info.g, info.x, info.y, info.w, info.h, done, unlocked, current);
+      this.drawDoorGlow(info.glow, info.x, info.y, n.sz === 2 ? 11 : 9, done, unlocked, current);
+
+      info.label.setColor(done ? '#2ecc71' : current ? '#f5c842' : unlocked ? '#c7d2f2' : '#6b7291');
+    });
+
+    this.torches.forEach(t => {
+      const current = currentId === t.id;
+      const done = isCompleted(t.id);
+      t.sprite.setAlpha(current || done ? 1 : 0.35);
     });
   }
 
   spawnPlayer() {
-    const first = this.nodes[0];
-    const sx = first.x * TW + TW / 2;
-    const sy = first.y * TW + TW * 2;
+    const sx = 7 * TW + TW / 2;
+    const sy = 3 * TW + TW / 2;
 
     this.pp = this.physics.add.sprite(sx, sy, 'idle_0')
       .setDisplaySize(18, 22)
@@ -858,11 +880,14 @@ class DungeonScene extends Phaser.Scene {
       .setMaxVelocity(90, 90)
       .setDepth(10);
 
+    this.pp.body.setSize(8, 10);
+    this.pp.body.setOffset(4, 10);
+
     this.ptag = this.add.text(sx, sy, state.user.nome, {
-      fontSize: '5px',
+      fontSize: '6px',
       color: '#f5c842',
       fontFamily: 'monospace',
-      backgroundColor: '#00000099',
+      backgroundColor: '#000000b0',
       padding: { x: 2, y: 1 }
     }).setOrigin(0.5, 1).setDepth(11);
   }
@@ -976,7 +1001,6 @@ class DungeonScene extends Phaser.Scene {
 
   getMovementVector() {
     let x = 0, y = 0;
-
     if (this.curs.left.isDown || this.wk.lt.isDown) x -= 1;
     if (this.curs.right.isDown || this.wk.rt.isDown) x += 1;
     if (this.curs.up.isDown || this.wk.up.isDown) y -= 1;
@@ -997,6 +1021,10 @@ class DungeonScene extends Phaser.Scene {
 
   interact() {
     if (state.ui.sageOpen || !this.near) return;
+    if (!isUnlocked(this.near.id)) {
+      toast('Prima completa la porta precedente');
+      return;
+    }
     if (isCompleted(this.near.id)) {
       toast('Stanza già completata');
       return;
@@ -1031,6 +1059,7 @@ class DungeonScene extends Phaser.Scene {
     let near = null;
     let nearest = Infinity;
     this.doorInteract.forEach(obj => {
+      if (!isUnlocked(obj.id) && !isCompleted(obj.id)) return;
       const d = Phaser.Math.Distance.Between(this.pp.x, this.pp.y, obj.x, obj.y);
       if (d < (obj.sz + 8) && d < nearest) {
         nearest = d;
@@ -1042,10 +1071,13 @@ class DungeonScene extends Phaser.Scene {
     const okBtn = qs('bok');
     const okHint = qs('oh');
     if (okBtn) okBtn.style.opacity = near ? '1' : '0.35';
-    if (okHint) okHint.textContent = near ? near.lbl.split(' ')[0] : 'percorso';
+    if (okHint) okHint.textContent = near ? near.lbl : 'percorso';
   }
 
   update(time, delta) {
+    this.pathGlowPulse += delta * 0.01;
+    this.redrawPathHighlights();
+
     if (state.ui.sageOpen) {
       this.pp.setVelocity(0, 0);
       return;
@@ -1066,8 +1098,11 @@ class DungeonScene extends Phaser.Scene {
     this.pp.setVelocity(vx, vy);
     this.updatePlayerAnimation(vx, vy, delta);
 
-    this.ptag.x = this.pp.x;
-    this.ptag.y = this.pp.y - 14;
+    this.pp.x = Math.round(this.pp.x);
+    this.pp.y = Math.round(this.pp.y);
+
+    this.ptag.x = Math.round(this.pp.x);
+    this.ptag.y = Math.round(this.pp.y - 14);
 
     this.updateNearbyDoor();
 
@@ -1080,9 +1115,13 @@ class DungeonScene extends Phaser.Scene {
 updateHUD();
 
 new Phaser.Game({
-  type: Phaser.AUTO,
+  type: Phaser.CANVAS,
   parent: 'ga',
   backgroundColor: '#050814',
+  pixelArt: true,
+  roundPixels: true,
+  antialias: false,
+  antialiasGL: false,
   physics: {
     default: 'arcade',
     arcade: {
@@ -1092,13 +1131,28 @@ new Phaser.Game({
   },
   scene: [DungeonScene],
   scale: {
-    mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
-    width: GW * TW,
-    height: GH * TW,
-    parent: 'ga'
+    mode: Phaser.Scale.NONE,
+    width: GAME_W,
+    height: GAME_H
   }
 });
+
+// canvas upscale intero per evitare blur
+(function applyIntegerCanvasScale() {
+  const fit = () => {
+    const canvas = document.querySelector('#ga canvas');
+    const host = document.getElementById('ga');
+    if (!canvas || !host) return;
+
+    const rect = host.getBoundingClientRect();
+    const scale = Math.max(1, Math.floor(Math.min(rect.width / GAME_W, rect.height / GAME_H)));
+    canvas.style.width = (GAME_W * scale) + 'px';
+    canvas.style.height = (GAME_H * scale) + 'px';
+    canvas.style.margin = '0 auto';
+  };
+  window.addEventListener('resize', fit);
+  setTimeout(fit, 50);
+})();
 </script>
 </body>
 </html>
