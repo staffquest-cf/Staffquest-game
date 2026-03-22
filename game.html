@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
-<meta name="mobile-web-app-capable" content="yes" />
 <title>StaffQuest Base</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -22,11 +21,11 @@ body{
 #root{
   position:relative;
   width:100%;
-  max-width:720px;
+  max-width:480px;
   height:100%;
+  margin:0 auto;
   display:flex;
   flex-direction:column;
-  margin:0 auto;
 }
 #ga{
   position:relative;
@@ -44,13 +43,12 @@ body{
 #hud{
   position:absolute;
   top:0;left:0;right:0;
-  padding:10px 12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-start;
-  gap:8px;
   z-index:20;
   pointer-events:none;
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  padding:10px 12px;
 }
 .hb{
   background:rgba(5,13,36,.94);
@@ -58,13 +56,13 @@ body{
   border-radius:10px;
   padding:6px 10px;
 }
-.hn{font-size:12px;font-weight:bold;color:#f5c842}
-.hx{font-size:10px;color:#7ad47a;margin-top:2px}
+.hn{font-size:11px;font-weight:bold;color:#f5c842}
+.hx{font-size:9px;color:#7ad47a;margin-top:2px}
 .xbar{
   background:#1a1a0a;
   border-radius:4px;
-  height:6px;
-  width:104px;
+  height:5px;
+  width:96px;
   margin-top:4px;
   overflow:hidden;
 }
@@ -72,10 +70,10 @@ body{
   height:100%;
   background:#f5c842;
   border-radius:4px;
-  transition:width .3s;
+  transition:width .25s;
 }
 .hw{
-  font-size:10px;
+  font-size:9px;
   color:#9aabd8;
   text-align:right;
   line-height:1.5;
@@ -84,7 +82,7 @@ body{
 #toast{
   position:absolute;
   left:50%;
-  bottom:102px;
+  bottom:100px;
   transform:translateX(-50%);
   z-index:30;
   pointer-events:none;
@@ -94,8 +92,8 @@ body{
   color:#dde5f4;
   border:1px solid #2b3654;
   border-radius:18px;
-  padding:8px 15px;
-  font-size:12px;
+  padding:7px 14px;
+  font-size:11px;
   white-space:nowrap;
   max-width:90%;
   text-align:center;
@@ -115,10 +113,10 @@ body{
   padding:24px;
 }
 #result.show{display:flex}
-#res-icon{font-size:52px}
-#res-title{font-size:22px;font-weight:bold;color:#f5c842}
-#res-xp{font-size:15px;color:#2ecc71}
-#res-msg{font-size:12px;color:#94a3c9;line-height:1.6;max-width:320px}
+#res-icon{font-size:48px}
+#res-title{font-size:20px;font-weight:bold;color:#f5c842}
+#res-xp{font-size:13px;color:#2ecc71}
+#res-msg{font-size:11px;color:#94a3c9;line-height:1.6;max-width:300px}
 #btn-res{
   margin-top:6px;
   padding:12px 24px;
@@ -126,7 +124,7 @@ body{
   background:rgba(245,200,66,.12);
   color:#f5c842;
   border:1px solid rgba(245,200,66,.35);
-  font-size:14px;
+  font-size:13px;
   font-weight:bold;
   font-family:monospace;
   cursor:pointer;
@@ -135,16 +133,16 @@ body{
 #ctl{
   position:absolute;
   left:0;right:0;bottom:10px;
-  padding:0 14px;
+  z-index:25;
+  pointer-events:none;
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
-  z-index:25;
-  pointer-events:none;
+  padding:0 12px;
 }
 #joy{
-  width:120px;
-  height:120px;
+  width:110px;
+  height:110px;
   position:relative;
   pointer-events:auto;
   touch-action:none;
@@ -158,8 +156,8 @@ body{
 }
 #jk{
   position:absolute;
-  width:42px;
-  height:42px;
+  width:38px;
+  height:38px;
   border-radius:50%;
   background:rgba(255,255,255,.16);
   border:1.5px solid rgba(255,255,255,.28);
@@ -167,10 +165,9 @@ body{
   left:50%;
   transform:translate(-50%,-50%);
 }
-
 #bok{
-  width:64px;
-  height:64px;
+  width:58px;
+  height:58px;
   border-radius:50%;
   background:rgba(245,200,66,.1);
   border:2px solid #f5c842;
@@ -181,8 +178,16 @@ body{
   justify-content:center;
   touch-action:none;
 }
-#bok .ol{font-size:11px;font-weight:bold;color:#f5c842}
-#bok .oh{font-size:8px;color:#6677aa;margin-top:1px;max-width:54px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#bok .ol{font-size:10px;font-weight:bold;color:#f5c842}
+#bok .oh{
+  font-size:7px;
+  color:#6677aa;
+  margin-top:1px;
+  max-width:48px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
 </style>
 </head>
 <body>
@@ -195,7 +200,7 @@ body{
         <div class="xbar"><div class="xfill" id="xf" style="width:0%"></div></div>
       </div>
       <div class="hb">
-        <div class="hw">Percorso lineare</div>
+        <div class="hw" id="hw">Percorso lineare</div>
       </div>
     </div>
 
@@ -205,7 +210,7 @@ body{
       <div id="res-icon">⭐</div>
       <div id="res-title">Stanza completata</div>
       <div id="res-xp">+15 XP</div>
-      <div id="res-msg">Base pronta. Qui poi collegherai il quiz reale della porta.</div>
+      <div id="res-msg">Qui poi collegherai il quiz reale di questa porta.</div>
       <button id="btn-res" type="button">Continua</button>
     </div>
 
@@ -224,11 +229,11 @@ body{
 
 <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
 <script>
-const TW = 24;
-const GW = 15;
-const GH = 24;
-const GAME_W = GW * TW;   // 360
-const GAME_H = GH * TW;   // 576
+const TILE = 32;
+const COLS = 9;
+const ROWS = 16;
+const GAME_W = TILE * COLS;   // 288
+const GAME_H = TILE * ROWS;   // 512
 const MAX_XP_BAR = 500;
 
 const STORAGE_KEYS = {
@@ -236,58 +241,51 @@ const STORAGE_KEYS = {
   progress: 'sq_progressi_base_v3'
 };
 
+// 0 muro, 1 percorso
 const PATH_MAP = [
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
-  [0,0,0,0,1,1,1,1,1,1,1,0,0,0,0],
-  [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+  [0,0,0,0,1,0,0,0,0],
+  [0,0,0,0,1,0,0,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,1,0,0,0,0,1,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,0,0,0,0,0,1,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,1,0,0,0,0,0,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,0,0,0,0,0,1,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,1,0,0,0,0,0,0,0],
+  [0,1,1,1,1,1,1,0,0],
+  [0,0,0,0,0,0,1,0,0],
+  [0,0,0,0,0,0,1,0,0],
+  [0,0,0,0,1,1,1,0,0]
 ];
 
 const ROLE_NODES = {
   Cameriere: [
-    { id: "ap",  label: "Apertura",     x: 7,  y: 1,  sz: 2 },
-    { id: "sal", label: "Sala",         x: 10, y: 4,  sz: 2 },
-    { id: "acc", label: "Accoglienza",  x: 4,  y: 7,  sz: 2 },
-    { id: "ven", label: "Vendita",      x: 10, y: 10, sz: 1 },
-    { id: "pre", label: "Prenotazioni", x: 4,  y: 13, sz: 1 },
-    { id: "rec", label: "Reclami",      x: 10, y: 16, sz: 1 }
+    { id:'ap',  label:'Apertura',     c:4, r:0,  sz:2 },
+    { id:'sal', label:'Sala',         c:6, r:2,  sz:2 },
+    { id:'acc', label:'Accoglienza',  c:1, r:6,  sz:2 },
+    { id:'ven', label:'Vendita',      c:6, r:8,  sz:1 },
+    { id:'pre', label:'Prenotazioni', c:1, r:12, sz:1 },
+    { id:'rec', label:'Reclami',      c:6, r:14, sz:1 }
   ],
   Cuoco: [
-    { id: "ap",  label: "Apertura",      x: 7,  y: 1,  sz: 2 },
-    { id: "org", label: "Organizzazione",x: 10, y: 4,  sz: 2 },
-    { id: "fun", label: "Funzionamento", x: 4,  y: 7,  sz: 1 },
-    { id: "ord", label: "Fornitori",     x: 10, y: 10, sz: 2 },
-    { id: "ser", label: "Servizio",      x: 4,  y: 13, sz: 1 },
-    { id: "com", label: "Comande",       x: 10, y: 16, sz: 1 },
-    { id: "ric", label: "Reclami",       x: 4,  y: 19, sz: 1 }
+    { id:'ap',  label:'Apertura',      c:4, r:0,  sz:2 },
+    { id:'org', label:'Organizzazione',c:6, r:2,  sz:2 },
+    { id:'fun', label:'Funzionamento', c:1, r:6,  sz:1 },
+    { id:'ord', label:'Fornitori',     c:6, r:8,  sz:2 },
+    { id:'ser', label:'Servizio',      c:1, r:10, sz:1 },
+    { id:'com', label:'Comande',       c:6, r:12, sz:1 },
+    { id:'ric', label:'Reclami',       c:6, r:15, sz:1 }
   ],
   Barista: [
-    { id: "ap",   label: "Apertura",      x: 7,  y: 1,  sz: 2 },
-    { id: "mag",  label: "Magazzino",     x: 10, y: 4,  sz: 2 },
-    { id: "prep", label: "Preparazioni",  x: 4,  y: 7,  sz: 1 },
-    { id: "org",  label: "Organizzazione",x: 10, y: 10, sz: 1 },
-    { id: "ser",  label: "Servizio",      x: 4,  y: 13, sz: 2 },
-    { id: "rec",  label: "Reclami",       x: 10, y: 16, sz: 1 }
+    { id:'ap',   label:'Apertura',      c:4, r:0,  sz:2 },
+    { id:'mag',  label:'Magazzino',     c:6, r:2,  sz:2 },
+    { id:'prep', label:'Preparazioni',  c:1, r:6,  sz:1 },
+    { id:'org',  label:'Organizzazione',c:6, r:8,  sz:1 },
+    { id:'ser',  label:'Servizio',      c:1, r:12, sz:2 },
+    { id:'rec',  label:'Reclami',       c:6, r:14, sz:1 }
   ]
 };
 
@@ -297,7 +295,6 @@ function safeParse(raw, fallback) {
 function loadStoredUser() {
   const stored = safeParse(localStorage.getItem(STORAGE_KEYS.user), null) ||
                  safeParse(sessionStorage.getItem(STORAGE_KEYS.user), null);
-
   let nome = stored?.nome || 'Eroe';
   let ruolo = stored?.ruolo || 'Cameriere';
   let xp = Number(stored?.xp || 0);
@@ -332,14 +329,9 @@ function persistProgress() {
 function isCompleted(id) { return !!state.progress.completed[id]; }
 function setCompleted(id, value=true) { state.progress.completed[id] = value; persistProgress(); }
 function qs(id) { return document.getElementById(id); }
-
-function getRoleNodes() {
-  return ROLE_NODES[state.user.ruolo] || ROLE_NODES.Cameriere;
-}
+function getRoleNodes() { return ROLE_NODES[state.user.ruolo] || ROLE_NODES.Cameriere; }
 function getCurrentNodeId() {
-  for (const node of getRoleNodes()) {
-    if (!isCompleted(node.id)) return node.id;
-  }
+  for (const node of getRoleNodes()) if (!isCompleted(node.id)) return node.id;
   return null;
 }
 function isUnlocked(id) {
@@ -365,7 +357,7 @@ function openResult(nodeLabel, xpGain) {
   qs('res-icon').textContent = '⭐';
   qs('res-title').textContent = `${nodeLabel} completata`;
   qs('res-xp').textContent = `+${xpGain} XP`;
-  qs('res-msg').textContent = 'Base stabile per smartphone. Qui collegherai il quiz reale.';
+  qs('res-msg').textContent = 'Base stabile. Il quiz reale verrà collegato a questa porta.';
   qs('result').classList.add('show');
 }
 function closeResult() {
@@ -383,9 +375,9 @@ class BaseScene extends Phaser.Scene {
     this.near = null;
     this.jActive = false;
     this.jDir = null;
-    this.gridC = 7;
-    this.gridR = 3;
     this.isMoving = false;
+    this.gridC = 4;
+    this.gridR = 1;
     this.animTimer = 0;
     this.walkFrame = 0;
     this.idleFrame = 0;
@@ -397,7 +389,7 @@ class BaseScene extends Phaser.Scene {
     const prog = this.add.graphics();
     const bg = this.add.rectangle(GAME_W/2, GAME_H/2, GAME_W, GAME_H, 0x08101d);
     const txt = this.add.text(GAME_W/2, GAME_H/2 - 16, 'Carico base StaffQuest...', {
-      fontSize:'12px',
+      fontSize:'11px',
       color:'#f5c842',
       fontFamily:'monospace'
     }).setOrigin(0.5);
@@ -405,9 +397,9 @@ class BaseScene extends Phaser.Scene {
     const drawProgress = (v) => {
       prog.clear();
       prog.fillStyle(0x1a1a2e);
-      prog.fillRect(GAME_W/2 - 100, GAME_H/2 + 12, 200, 14);
+      prog.fillRect(GAME_W/2 - 80, GAME_H/2 + 8, 160, 12);
       prog.fillStyle(0xf5c842);
-      prog.fillRect(GAME_W/2 - 100, GAME_H/2 + 12, 200 * v, 14);
+      prog.fillRect(GAME_W/2 - 80, GAME_H/2 + 8, 160 * v, 12);
     };
 
     this.load.on('progress', drawProgress);
@@ -442,38 +434,37 @@ class BaseScene extends Phaser.Scene {
     this.cameras.main.setRoundPixels(true);
     this.cameras.main.startFollow(this.pp, true, 1, 1);
     this.cameras.main.setZoom(1);
+    this.cameras.main.setBounds(0, 0, GAME_W, GAME_H);
 
     updateHUD();
     this.refreshNodes();
-    toast('Movimento a caselle. 4 direzioni nette.');
+    toast('Movimento a caselle. 4 direzioni nette, stabile su smartphone.');
   }
+
+  tileX(c){ return c * TILE + TILE / 2; }
+  tileY(r){ return r * TILE + TILE / 2; }
+  isPath(c,r){ return r >= 0 && r < ROWS && c >= 0 && c < COLS && PATH_MAP[r][c] === 1; }
 
   buildMap() {
     const g = this.add.graphics().setDepth(0);
-
     g.fillStyle(0x08101d);
     g.fillRect(0, 0, GAME_W, GAME_H);
 
-    for (let r = 0; r < GH; r++) {
-      for (let c = 0; c < GW; c++) {
-        const x = c * TW;
-        const y = r * TW;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const x = c * TILE;
+        const y = r * TILE;
 
         if (PATH_MAP[r][c] === 1) {
           g.fillStyle(0x243553);
-          g.fillRoundedRect(x + 1, y + 1, TW - 2, TW - 2, 4);
-
+          g.fillRoundedRect(x + 2, y + 2, TILE - 4, TILE - 4, 6);
           g.fillStyle(0x36507d);
-          g.fillRect(x + 2, y + 2, TW - 4, 3);
-
-          g.fillStyle(0x1a2741);
-          g.fillRect(x + 2, y + TW - 5, TW - 4, 3);
+          g.fillRoundedRect(x + 3, y + 3, TILE - 6, 6, 3);
         } else {
           g.fillStyle(0x0b1322);
-          g.fillRect(x, y, TW, TW);
-
-          g.lineStyle(1, 0x12203a, 0.6);
-          g.strokeRect(x, y, TW, TW);
+          g.fillRect(x, y, TILE, TILE);
+          g.lineStyle(1, 0x12203a, 0.7);
+          g.strokeRect(x, y, TILE, TILE);
         }
       }
     }
@@ -486,13 +477,13 @@ class BaseScene extends Phaser.Scene {
     this.pathBase.clear();
     this.pathCurrent.clear();
 
-    for (let r = 0; r < GH; r++) {
-      for (let c = 0; c < GW; c++) {
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
         if (PATH_MAP[r][c] !== 1) continue;
-        const x = c * TW;
-        const y = r * TW;
+        const x = c * TILE;
+        const y = r * TILE;
         this.pathBase.fillStyle(0x6f93cf, 0.08);
-        this.pathBase.fillRoundedRect(x + 5, y + 5, TW - 10, TW - 10, 4);
+        this.pathBase.fillRoundedRect(x + 7, y + 7, TILE - 14, TILE - 14, 5);
       }
     }
 
@@ -500,28 +491,23 @@ class BaseScene extends Phaser.Scene {
     const currentNode = this.nodes.find(n => n.id === currentId);
     if (!currentNode) return;
 
-    const pathCells = this.getPathToNode(currentNode.x, currentNode.y);
-    const pulse = 0.16 + Math.sin(this.pathGlowPulse) * 0.05;
+    const pulse = 0.18 + Math.sin(this.pathGlowPulse) * 0.05;
+    const route = this.getPathToNode(currentNode.c, currentNode.r);
 
-    pathCells.forEach(({c,r}) => {
-      const x = c * TW;
-      const y = r * TW;
+    route.forEach(({c,r}) => {
+      const x = c * TILE;
+      const y = r * TILE;
       this.pathCurrent.fillStyle(0xf5c842, pulse);
-      this.pathCurrent.fillRoundedRect(x + 6, y + 6, TW - 12, TW - 12, 4);
+      this.pathCurrent.fillRoundedRect(x + 8, y + 8, TILE - 16, TILE - 16, 5);
     });
   }
 
   getPathToNode(targetC, targetR) {
-    const start = { c: 7, r: 3 };
+    const start = { c: 4, r: 1 };
     const key = (c,r) => `${c},${r}`;
-    const dirs = [
-      {dc:1,dr:0},
-      {dc:-1,dr:0},
-      {dc:0,dr:1},
-      {dc:0,dr:-1}
-    ];
+    const dirs = [{dc:1,dr:0},{dc:-1,dr:0},{dc:0,dr:1},{dc:0,dr:-1}];
     const queue = [start];
-    const visited = new Set([key(start.c, start.r)]);
+    const visited = new Set([key(start.c,start.r)]);
     const prev = new Map();
 
     while (queue.length) {
@@ -531,18 +517,17 @@ class BaseScene extends Phaser.Scene {
       for (const d of dirs) {
         const nc = cur.c + d.dc;
         const nr = cur.r + d.dr;
-        if (!this.isPath(nc, nr)) continue;
-        const k = key(nc, nr);
+        if (!this.isPath(nc,nr)) continue;
+        const k = key(nc,nr);
         if (visited.has(k)) continue;
         visited.add(k);
         prev.set(k, cur);
-        queue.push({ c:nc, r:nr });
+        queue.push({c:nc,r:nr});
       }
     }
 
     const out = [];
-    if (!visited.has(key(targetC, targetR))) return out;
-
+    if (!visited.has(key(targetC,targetR))) return out;
     let cur = { c: targetC, r: targetR };
     while (!(cur.c === start.c && cur.r === start.r)) {
       out.push(cur);
@@ -556,25 +541,23 @@ class BaseScene extends Phaser.Scene {
 
   buildNodes() {
     this.nodeViews = {};
-
     this.nodes.forEach(node => {
-      const x = this.tileToWorldX(node.x);
-      const y = this.tileToWorldY(node.y);
+      const x = this.tileX(node.c);
+      const y = this.tileY(node.r);
       const big = node.sz === 2;
-      const w = big ? 28 : 24;
-      const h = big ? 28 : 24;
+      const size = big ? 24 : 20;
 
       const glow = this.add.graphics().setDepth(2);
       const box = this.add.graphics().setDepth(3);
-      const label = this.add.text(x, y - (big ? 18 : 14), node.label, {
-        fontSize: '10px',
-        color: '#cdd8f0',
-        fontFamily: 'monospace',
-        backgroundColor: 'rgba(5,13,36,0.96)',
-        padding: { x: 3, y: 2 }
-      }).setOrigin(0.5, 1).setDepth(4);
+      const label = this.add.text(x, y - (big ? 16 : 14), node.label, {
+        fontSize:'8px',
+        color:'#cdd8f0',
+        fontFamily:'monospace',
+        backgroundColor:'rgba(5,13,36,0.95)',
+        padding:{x:3,y:2}
+      }).setOrigin(0.5,1).setDepth(4);
 
-      this.nodeViews[node.id] = { x, y, w, h, glow, box, label, big, node };
+      this.nodeViews[node.id] = { node, x, y, size, glow, box, label };
     });
   }
 
@@ -591,30 +574,30 @@ class BaseScene extends Phaser.Scene {
 
     if (done) {
       view.glow.fillStyle(0x2ecc71, 0.16);
-      view.glow.fillCircle(view.x, view.y, view.big ? 18 : 15);
+      view.glow.fillCircle(view.x, view.y, view.size * 0.7);
     } else if (current) {
-      view.glow.fillStyle(0xf5c842, 0.18 + Math.sin(this.pathGlowPulse) * 0.05);
-      view.glow.fillCircle(view.x, view.y, view.big ? 19 : 16);
+      view.glow.fillStyle(0xf5c842, 0.2 + Math.sin(this.pathGlowPulse) * 0.05);
+      view.glow.fillCircle(view.x, view.y, view.size * 0.8);
     } else if (unlocked) {
       view.glow.fillStyle(0x8ca4d9, 0.08);
-      view.glow.fillCircle(view.x, view.y, view.big ? 16 : 14);
+      view.glow.fillCircle(view.x, view.y, view.size * 0.6);
     }
 
-    const alpha = done || current || unlocked ? 1 : 0.5;
+    const alpha = done || current || unlocked ? 1 : 0.45;
     const border = done ? 0x2ecc71 : current ? 0xf5c842 : unlocked ? 0x90a8d8 : 0x4d5670;
     const fill = done ? 0x224a31 : current ? 0x7a4a1d : unlocked ? 0x2c3852 : 0x242836;
 
     view.box.fillStyle(0x0a0f18, 0.25 * alpha);
-    view.box.fillRoundedRect(view.x - view.w/2 + 1, view.y - view.h/2 + 2, view.w, view.h, 5);
+    view.box.fillRoundedRect(view.x - view.size/2 + 2, view.y - view.size/2 + 3, view.size, view.size, 6);
 
     view.box.fillStyle(0x192132, alpha);
-    view.box.fillRoundedRect(view.x - view.w/2 - 2, view.y - view.h/2 - 2, view.w + 4, view.h + 4, 5);
-
-    view.box.fillStyle(fill, alpha);
-    view.box.fillRoundedRect(view.x - view.w/2, view.y - view.h/2, view.w, view.h, 5);
+    view.box.fillRoundedRect(view.x - view.size/2, view.y - view.size/2, view.size, view.size, 6);
 
     view.box.lineStyle(2, border, alpha);
-    view.box.strokeRoundedRect(view.x - view.w/2, view.y - view.h/2, view.w, view.h, 5);
+    view.box.strokeRoundedRect(view.x - view.size/2, view.y - view.size/2, view.size, view.size, 6);
+
+    view.box.fillStyle(fill, alpha);
+    view.box.fillRoundedRect(view.x - view.size/2 + 4, view.y - view.size/2 + 4, view.size - 8, view.size - 8, 4);
 
     view.box.fillStyle(border, alpha);
     view.box.fillCircle(view.x, view.y, 4);
@@ -627,20 +610,20 @@ class BaseScene extends Phaser.Scene {
   }
 
   spawnPlayer() {
-    const x = this.tileToWorldX(this.gridC);
-    const y = this.tileToWorldY(this.gridR);
+    const x = this.tileX(this.gridC);
+    const y = this.tileY(this.gridR);
 
     this.pp = this.add.sprite(x, y, 'idle_0')
-      .setDisplaySize(26, 32)
+      .setDisplaySize(24, 30)
       .setDepth(10);
 
-    this.ptag = this.add.text(x, y, state.user.nome, {
-      fontSize: '10px',
-      color: '#f5c842',
-      fontFamily: 'monospace',
-      backgroundColor: '#000000b0',
-      padding: { x: 3, y: 2 }
-    }).setOrigin(0.5, 1).setDepth(11);
+    this.ptag = this.add.text(x, y - 18, state.user.nome, {
+      fontSize:'8px',
+      color:'#f5c842',
+      fontFamily:'monospace',
+      backgroundColor:'#000000b0',
+      padding:{x:3,y:2}
+    }).setOrigin(0.5,1).setDepth(11);
   }
 
   setupKeyboard() {
@@ -658,4 +641,251 @@ class BaseScene extends Phaser.Scene {
   setupJoystick4Dir() {
     const joy = qs('joy');
     const knob = qs('jk');
-    if (!joy || !knob)
+    if (!joy || !knob) return;
+    const R = 34;
+
+    const getPoint = (e) => {
+      const t = e.touches ? e.touches[0] : e;
+      const rect = joy.getBoundingClientRect();
+      return {
+        x: t.clientX - rect.left - rect.width / 2,
+        y: t.clientY - rect.top - rect.height / 2
+      };
+    };
+
+    const setDir = (x, y) => {
+      const ax = Math.abs(x);
+      const ay = Math.abs(y);
+
+      if (Math.max(ax, ay) < 10) {
+        this.jDir = null;
+        knob.style.transform = 'translate(-50%,-50%)';
+        return;
+      }
+
+      if (ax > ay) this.jDir = x > 0 ? 'right' : 'left';
+      else this.jDir = y > 0 ? 'down' : 'up';
+
+      let kx = 0, ky = 0;
+      if (this.jDir === 'left') kx = -R;
+      if (this.jDir === 'right') kx = R;
+      if (this.jDir === 'up') ky = -R;
+      if (this.jDir === 'down') ky = R;
+
+      knob.style.transform = `translate(calc(-50% + ${kx}px), calc(-50% + ${ky}px))`;
+    };
+
+    const onStart = (e) => {
+      if (state.ui.resultOpen) return;
+      e.preventDefault?.();
+      this.jActive = true;
+      const p = getPoint(e);
+      setDir(p.x, p.y);
+    };
+    const onMove = (e) => {
+      if (!this.jActive || state.ui.resultOpen) return;
+      e.preventDefault?.();
+      const p = getPoint(e);
+      setDir(p.x, p.y);
+    };
+    const onEnd = () => {
+      this.jActive = false;
+      this.jDir = null;
+      knob.style.transform = 'translate(-50%,-50%)';
+    };
+
+    joy.addEventListener('touchstart', onStart, { passive:false });
+    joy.addEventListener('touchmove', onMove, { passive:false });
+    joy.addEventListener('touchend', onEnd, { passive:false });
+    joy.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', onMove);
+    window.addEventListener('mouseup', onEnd);
+
+    this._handlers.push(() => joy.removeEventListener('touchstart', onStart));
+    this._handlers.push(() => joy.removeEventListener('touchmove', onMove));
+    this._handlers.push(() => joy.removeEventListener('touchend', onEnd));
+    this._handlers.push(() => joy.removeEventListener('mousedown', onStart));
+    this._handlers.push(() => window.removeEventListener('mousemove', onMove));
+    this._handlers.push(() => window.removeEventListener('mouseup', onEnd));
+  }
+
+  setupOkButton() {
+    const btn = qs('bok');
+    if (!btn) return;
+    const onTouch = (e) => { e.preventDefault(); this.interact(); };
+    const onMouse = () => this.interact();
+
+    btn.addEventListener('touchstart', onTouch, { passive:false });
+    btn.addEventListener('mousedown', onMouse);
+
+    this._handlers.push(() => btn.removeEventListener('touchstart', onTouch));
+    this._handlers.push(() => btn.removeEventListener('mousedown', onMouse));
+  }
+
+  cleanupHandlers() {
+    while (this._handlers.length) {
+      const fn = this._handlers.pop();
+      try { fn(); } catch {}
+    }
+  }
+
+  tryMove(dir) {
+    if (this.isMoving) return;
+
+    let dc = 0, dr = 0;
+    if (dir === 'left') dc = -1;
+    if (dir === 'right') dc = 1;
+    if (dir === 'up') dr = -1;
+    if (dir === 'down') dr = 1;
+
+    const nc = this.gridC + dc;
+    const nr = this.gridR + dr;
+    if (!this.isPath(nc, nr)) return;
+
+    this.gridC = nc;
+    this.gridR = nr;
+    this.isMoving = true;
+
+    const tx = this.tileX(nc);
+    const ty = this.tileY(nr);
+
+    if (dir === 'left') this.pp.setFlipX(true);
+    if (dir === 'right') this.pp.setFlipX(false);
+
+    this.tweens.add({
+      targets: this.pp,
+      x: tx,
+      y: ty,
+      duration: 140,
+      ease: 'Linear',
+      onComplete: () => { this.isMoving = false; }
+    });
+
+    this.tweens.add({
+      targets: this.ptag,
+      x: tx,
+      y: ty - 18,
+      duration: 140,
+      ease: 'Linear'
+    });
+  }
+
+  interact() {
+    if (state.ui.resultOpen || !this.near) return;
+    if (!isUnlocked(this.near.id)) {
+      toast('Prima completa la porta precedente');
+      return;
+    }
+    if (isCompleted(this.near.id)) {
+      toast('Porta già completata');
+      return;
+    }
+
+    const xpGain = 15;
+    setCompleted(this.near.id, true);
+    state.user.xp += xpGain;
+    persistUser();
+    updateHUD();
+    openResult(this.near.label, xpGain);
+  }
+
+  updatePlayerAnimation(delta) {
+    this.animTimer += delta;
+
+    if (this.isMoving) {
+      if (this.animTimer > 90) {
+        this.animTimer = 0;
+        this.walkFrame = (this.walkFrame + 1) % 30;
+        const key = 'walk_' + this.walkFrame;
+        if (this.textures.exists(key)) this.pp.setTexture(key);
+      }
+    } else {
+      if (this.animTimer > 170) {
+        this.animTimer = 0;
+        this.idleFrame = (this.idleFrame + 1) % 8;
+        const key = 'idle_' + this.idleFrame;
+        if (this.textures.exists(key)) this.pp.setTexture(key);
+      }
+    }
+  }
+
+  updateNearNode() {
+    let near = null;
+    let nearest = Infinity;
+    const px = this.tileX(this.gridC);
+    const py = this.tileY(this.gridR);
+    const currentId = getCurrentNodeId();
+
+    this.nodes.forEach(node => {
+      const x = this.tileX(node.c);
+      const y = this.tileY(node.r);
+      const d = Phaser.Math.Distance.Between(px, py, x, y);
+      if (d < 26 && d < nearest) {
+        nearest = d;
+        near = node;
+      }
+    });
+
+    this.near = near;
+
+    const okBtn = qs('bok');
+    const okHint = qs('oh');
+
+    if (near) {
+      okBtn.style.opacity = '1';
+      okHint.textContent = near.id === currentId ? near.label : isCompleted(near.id) ? 'fatta' : 'bloccata';
+    } else {
+      okBtn.style.opacity = '0.35';
+      okHint.textContent = 'porta';
+    }
+  }
+
+  pollInput() {
+    if (this.isMoving || state.ui.resultOpen) return;
+
+    let dir = null;
+
+    if (this.curs.left.isDown || this.wk.lt.isDown) dir = 'left';
+    else if (this.curs.right.isDown || this.wk.rt.isDown) dir = 'right';
+    else if (this.curs.up.isDown || this.wk.up.isDown) dir = 'up';
+    else if (this.curs.down.isDown || this.wk.dn.isDown) dir = 'down';
+    else if (this.jDir) dir = this.jDir;
+
+    if (dir) this.tryMove(dir);
+  }
+
+  update(time, delta) {
+    this.pathGlowPulse += delta * 0.01;
+    this.redrawPath();
+    this.refreshNodes();
+    this.pollInput();
+    this.updatePlayerAnimation(delta);
+    this.updateNearNode();
+
+    if (Phaser.Input.Keyboard.JustDown(this.spc) || Phaser.Input.Keyboard.JustDown(this.enter)) {
+      this.interact();
+    }
+  }
+}
+
+updateHUD();
+
+new Phaser.Game({
+  type: Phaser.AUTO,
+  parent: 'ga',
+  backgroundColor: '#08101d',
+  pixelArt: true,
+  roundPixels: true,
+  antialias: false,
+  antialiasGL: false,
+  scene: [BaseScene],
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
+    width: GAME_W,
+    height: GAME_H
+  }
+});
+</script>
+</body>
+</html>
