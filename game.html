@@ -134,18 +134,17 @@ body{
   position:absolute;
   left:0;right:0;bottom:10px;
   z-index:25;
-  pointer-events:none;
   display:flex;
   justify-content:space-between;
   align-items:flex-end;
   padding:0 12px;
+  pointer-events:auto;
 }
 
 #dpad{
   width:132px;
   height:132px;
   position:relative;
-  pointer-events:auto;
 }
 .dbtn{
   position:absolute;
@@ -160,11 +159,10 @@ body{
   display:flex;
   align-items:center;
   justify-content:center;
-  touch-action:none;
+  touch-action:manipulation;
   user-select:none;
 }
-.dbtn:active,
-.dbtn.active{
+.dbtn:active{
   background:rgba(245,200,66,.16);
   border-color:#f5c842;
   color:#f5c842;
@@ -190,12 +188,11 @@ body{
   border-radius:50%;
   background:rgba(245,200,66,.1);
   border:2px solid #f5c842;
-  pointer-events:auto;
   display:flex;
   flex-direction:column;
   align-items:center;
   justify-content:center;
-  touch-action:none;
+  touch-action:manipulation;
 }
 #bok .ol{font-size:10px;font-weight:bold;color:#f5c842}
 #bok .oh{
@@ -235,14 +232,14 @@ body{
 
     <div id="ctl">
       <div id="dpad">
-        <button id="dup" class="dbtn" type="button">▲</button>
-        <button id="dleft" class="dbtn" type="button">◀</button>
+        <button id="dup" class="dbtn" type="button" onclick="movePlayer('up')">▲</button>
+        <button id="dleft" class="dbtn" type="button" onclick="movePlayer('left')">◀</button>
         <div id="dcenter"></div>
-        <button id="dright" class="dbtn" type="button">▶</button>
-        <button id="ddown" class="dbtn" type="button">▼</button>
+        <button id="dright" class="dbtn" type="button" onclick="movePlayer('right')">▶</button>
+        <button id="ddown" class="dbtn" type="button" onclick="movePlayer('down')">▼</button>
       </div>
 
-      <div id="bok">
+      <div id="bok" onclick="pressOk()">
         <div class="ol">OK</div>
         <div class="oh" id="oh">porta</div>
       </div>
@@ -261,7 +258,7 @@ const MAX_XP_BAR = 500;
 
 const STORAGE_KEYS = {
   user: 'sq_user',
-  progress: 'sq_progressi_base_v6'
+  progress: 'sq_progressi_base_v7'
 };
 
 const PATH_MAP = [
@@ -389,6 +386,13 @@ function closeResult() {
 }
 qs('btn-res').addEventListener('click', closeResult);
 
+function movePlayer(dir) {
+  state.scene?.tryMove(dir);
+}
+function pressOk() {
+  state.scene?.interact();
+}
+
 class BaseScene extends Phaser.Scene {
   constructor() {
     super('BaseScene');
@@ -402,8 +406,6 @@ class BaseScene extends Phaser.Scene {
     this.walkFrame = 0;
     this.idleFrame = 0;
     this.pathGlowPulse = 0;
-    this.moveRepeatTimer = null;
-    this._handlers = [];
   }
 
   preload() {
@@ -449,8 +451,6 @@ class BaseScene extends Phaser.Scene {
     this.buildNodes();
     this.spawnPlayer();
     this.setupKeyboard();
-    this.setupDpad();
-    this.setupOkButton();
 
     this.cameras.main.setRoundPixels(true);
     this.cameras.main.startFollow(this.pp, true, 1, 1);
@@ -459,12 +459,12 @@ class BaseScene extends Phaser.Scene {
 
     updateHUD();
     this.refreshNodes();
-    toast('Usa il D-pad. Ora il movimento parte subito al tocco.');
+    toast('I pulsanti ora chiamano direttamente il movimento.');
   }
 
   tileX(c){ return c * TILE + TILE / 2; }
   tileY(r){ return r * TILE + TILE / 2; }
-  isPath(c,r){ return r >= 0 && r < ROWS && c >= 0 && c < COLS && PATH_MAP[r][c] === 1; }
+  isPath(c,r){ return r >= 0 && r < ROWS && c >= 0 && c <  COLS && PATH_MAP[r][c] === 1; }
 
   buildMap() {
     const g = this.add.graphics().setDepth(0);
@@ -661,82 +661,10 @@ class BaseScene extends Phaser.Scene {
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   }
 
-  startMoveRepeat(dir) {
-    if (state.ui.resultOpen) return;
-    this.tryMove(dir);
-
-    clearInterval(this.moveRepeatTimer);
-    this.moveRepeatTimer = setInterval(() => {
-      this.tryMove(dir);
-    }, 170);
-  }
-
-  stopMoveRepeat() {
-    clearInterval(this.moveRepeatTimer);
-    this.moveRepeatTimer = null;
-  }
-
-  setupDpad() {
-    const bindDir = (id, dir) => {
-      const el = qs(id);
-      if (!el) return;
-
-      const activate = (e) => {
-        e?.preventDefault?.();
-        el.classList.add('active');
-        this.startMoveRepeat(dir);
-      };
-
-      const deactivate = (e) => {
-        e?.preventDefault?.();
-        el.classList.remove('active');
-        this.stopMoveRepeat();
-      };
-
-      el.addEventListener('touchstart', activate, { passive:false });
-      el.addEventListener('touchend', deactivate, { passive:false });
-      el.addEventListener('touchcancel', deactivate, { passive:false });
-      el.addEventListener('mousedown', activate);
-      el.addEventListener('mouseup', deactivate);
-      el.addEventListener('mouseleave', deactivate);
-
-      this._handlers.push(() => el.removeEventListener('touchstart', activate));
-      this._handlers.push(() => el.removeEventListener('touchend', deactivate));
-      this._handlers.push(() => el.removeEventListener('touchcancel', deactivate));
-      this._handlers.push(() => el.removeEventListener('mousedown', activate));
-      this._handlers.push(() => el.removeEventListener('mouseup', deactivate));
-      this._handlers.push(() => el.removeEventListener('mouseleave', deactivate));
-    };
-
-    bindDir('dup', 'up');
-    bindDir('ddown', 'down');
-    bindDir('dleft', 'left');
-    bindDir('dright', 'right');
-  }
-
-  setupOkButton() {
-    const btn = qs('bok');
-    if (!btn) return;
-    const onTouch = (e) => { e.preventDefault(); this.interact(); };
-    const onMouse = () => this.interact();
-
-    btn.addEventListener('touchstart', onTouch, { passive:false });
-    btn.addEventListener('mousedown', onMouse);
-
-    this._handlers.push(() => btn.removeEventListener('touchstart', onTouch));
-    this._handlers.push(() => btn.removeEventListener('mousedown', onMouse));
-  }
-
-  cleanupHandlers() {
-    this.stopMoveRepeat();
-    while (this._handlers.length) {
-      const fn = this._handlers.pop();
-      try { fn(); } catch {}
-    }
-  }
-
   tryMove(dir) {
-    if (this.isMoving) return;
+    console.log('tryMove', dir);
+
+    if (this.isMoving || state.ui.resultOpen) return;
 
     let dc = 0, dr = 0;
     if (dir === 'left') dc = -1;
@@ -746,7 +674,11 @@ class BaseScene extends Phaser.Scene {
 
     const nc = this.gridC + dc;
     const nr = this.gridR + dr;
-    if (!this.isPath(nc, nr)) return;
+
+    if (!this.isPath(nc, nr)) {
+      console.log('blocked', nc, nr);
+      return;
+    }
 
     this.gridC = nc;
     this.gridR = nr;
