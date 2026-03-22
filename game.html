@@ -4,13 +4,37 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover" />
 <meta name="mobile-web-app-capable" content="yes" />
-<title>StaffQuest</title>
+<title>StaffQuest Base</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#050814;font-family:monospace}
-body{display:flex;justify-content:center;align-items:center}
-#root{position:relative;width:100%;max-width:430px;height:100%;display:flex;flex-direction:column}
-#ga{position:relative;flex:1;min-height:0;overflow:hidden;background:#050814}
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#08101d;
+  font-family:monospace;
+}
+body{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+#root{
+  position:relative;
+  width:100%;
+  max-width:560px;
+  height:100%;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+}
+#ga{
+  position:relative;
+  flex:1;
+  min-height:0;
+  overflow:hidden;
+  background:#08101d;
+}
 #ga canvas{
   display:block!important;
   image-rendering:pixelated;
@@ -18,108 +42,147 @@ body{display:flex;justify-content:center;align-items:center}
 }
 
 #hud{
-  position:absolute;top:0;left:0;right:0;padding:8px 10px;pointer-events:none;z-index:20;
-  display:flex;justify-content:space-between;align-items:flex-start;gap:8px
+  position:absolute;
+  top:0;left:0;right:0;
+  padding:10px 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:8px;
+  z-index:20;
+  pointer-events:none;
 }
 .hb{
   background:rgba(5,13,36,.94);
   border:1px solid rgba(245,200,66,.28);
-  border-radius:8px;
-  padding:5px 9px;
-  box-shadow:0 2px 8px rgba(0,0,0,.25)
+  border-radius:10px;
+  padding:6px 10px;
 }
-.hn{font-size:10px;font-weight:bold;color:#f5c842}
-.hx{font-size:8px;color:#7ad47a;margin-top:2px}
-.xbar{background:#1a1a0a;border-radius:3px;height:4px;width:84px;margin-top:4px;overflow:hidden}
-.xfill{height:100%;background:#f5c842;border-radius:3px;transition:width .35s}
-.hw{font-size:8px;color:#8792c8;text-align:right;line-height:1.7}
+.hn{font-size:11px;font-weight:bold;color:#f5c842}
+.hx{font-size:9px;color:#7ad47a;margin-top:2px}
+.xbar{
+  background:#1a1a0a;
+  border-radius:4px;
+  height:5px;
+  width:96px;
+  margin-top:4px;
+  overflow:hidden;
+}
+.xfill{
+  height:100%;
+  background:#f5c842;
+  border-radius:4px;
+  transition:width .3s;
+}
+.hw{
+  font-size:9px;
+  color:#9aabd8;
+  text-align:right;
+  line-height:1.5;
+}
 
 #toast{
-  position:absolute;bottom:98px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,.92);color:#d9deeb;font-size:10px;padding:6px 14px;border-radius:20px;
-  border:1px solid #2a2a3a;pointer-events:none;opacity:0;transition:opacity .3s;
-  white-space:nowrap;z-index:15;max-width:90%;text-align:center
+  position:absolute;
+  left:50%;
+  bottom:96px;
+  transform:translateX(-50%);
+  z-index:30;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity .25s;
+  background:rgba(0,0,0,.88);
+  color:#dde5f4;
+  border:1px solid #2b3654;
+  border-radius:18px;
+  padding:7px 14px;
+  font-size:11px;
+  white-space:nowrap;
+  max-width:90%;
+  text-align:center;
 }
-
-#sage-ov{
-  position:absolute;inset:0;z-index:40;display:none;flex-direction:column;justify-content:flex-end
-}
-#sage-ov.show{display:flex}
-#sage-bg{position:absolute;inset:0;background:rgba(0,0,0,.58)}
-#sage-box{position:relative;background:#07070f;border-top:3px solid #f5c842}
-#sage-hdr{
-  display:flex;align-items:center;gap:10px;padding:10px 14px 8px;
-  border-bottom:1px solid rgba(245,200,66,.2)
-}
-#sage-face{
-  width:48px;height:48px;border-radius:8px;border:2px solid rgba(245,200,66,.4);
-  overflow:hidden;flex-shrink:0;background:#0d0d22;display:flex;align-items:center;justify-content:center
-}
-#sage-face canvas{display:block;image-rendering:pixelated}
-#sage-nametag{font-size:11px;font-weight:bold;color:#f5c842}
-#sage-proc{font-size:9px;color:#6677bb;margin-top:2px}
-#sage-body{padding:10px 14px}
-#sage-sc{font-size:10px;color:#8899bb;line-height:1.5;margin-bottom:8px;font-style:italic;min-height:30px}
-#sage-q{font-size:12px;font-weight:bold;color:#f5c842;line-height:1.4;margin-bottom:10px}
-#sage-ch{display:flex;flex-direction:column;gap:6px;margin-bottom:8px}
-.sage-btn{
-  background:#0c0c24;border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:9px 12px;
-  font-size:10px;color:#aabbd0;text-align:left;cursor:pointer;font-family:monospace;line-height:1.4;
-  touch-action:manipulation;display:block;width:100%
-}
-.sage-btn:active{background:rgba(245,200,66,.1);border-color:#f5c842;color:#f5c842}
-.sage-btn[disabled]{cursor:default}
-#sage-prog{font-size:9px;color:#445577;text-align:center}
-
-#badge{
-  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
-  background:rgba(4,4,18,.97);border:2px solid #f5c842;border-radius:14px;padding:18px 24px;
-  z-index:50;text-align:center;transition:transform .35s cubic-bezier(.34,1.56,.64,1);pointer-events:none
-}
-#badge.show{transform:translate(-50%,-50%) scale(1)}
-#badge .bi{font-size:36px;display:block;margin-bottom:6px}
-#badge .bt{font-size:12px;font-weight:bold;color:#f5c842}
-#badge .bs{font-size:9px;color:#aaa;margin-top:3px}
 
 #result{
-  position:absolute;inset:0;z-index:45;background:rgba(4,4,18,.97);display:none;
-  flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:28px
+  position:absolute;
+  inset:0;
+  z-index:40;
+  background:rgba(6,9,18,.96);
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:12px;
+  text-align:center;
+  padding:24px;
 }
 #result.show{display:flex}
-#res-icon{font-size:52px}
+#res-icon{font-size:48px}
 #res-title{font-size:20px;font-weight:bold;color:#f5c842}
 #res-xp{font-size:13px;color:#2ecc71}
-#res-msg{font-size:11px;color:#7788aa;line-height:1.6;max-width:270px}
+#res-msg{font-size:11px;color:#94a3c9;line-height:1.6;max-width:300px}
 #btn-res{
-  margin-top:6px;padding:12px 26px;border-radius:10px;background:rgba(245,200,66,.12);
-  color:#f5c842;border:1px solid rgba(245,200,66,.35);font-size:13px;font-weight:bold;
-  font-family:monospace;letter-spacing:2px;cursor:pointer;touch-action:manipulation
+  margin-top:6px;
+  padding:12px 24px;
+  border-radius:10px;
+  background:rgba(245,200,66,.12);
+  color:#f5c842;
+  border:1px solid rgba(245,200,66,.35);
+  font-size:13px;
+  font-weight:bold;
+  font-family:monospace;
+  cursor:pointer;
 }
 
 #ctl{
-  position:absolute;bottom:8px;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;
-  padding:0 10px;z-index:12;pointer-events:none
+  position:absolute;
+  left:0;right:0;bottom:8px;
+  padding:0 12px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  z-index:25;
+  pointer-events:none;
 }
-#joy{width:88px;height:88px;pointer-events:auto;position:relative;touch-action:none}
+#joy{
+  width:110px;
+  height:110px;
+  position:relative;
+  pointer-events:auto;
+  touch-action:none;
+}
 #jb{
-  position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.04);
-  border:1.5px solid rgba(255,255,255,.12)
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.12);
 }
 #jk{
-  position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.14);
-  border:1.5px solid rgba(255,255,255,.26);top:50%;left:50%;transform:translate(-50%,-50%)
+  position:absolute;
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:rgba(255,255,255,.16);
+  border:1.5px solid rgba(255,255,255,.28);
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
 }
+
 #bok{
-  width:56px;height:56px;border-radius:50%;background:rgba(245,200,66,.1);border:2px solid #f5c842;
-  pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;touch-action:none;transition:opacity .15s, transform .15s
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  background:rgba(245,200,66,.1);
+  border:2px solid #f5c842;
+  pointer-events:auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  touch-action:none;
 }
-#bok:active{transform:scale(.96)}
-#bok .ol{font-size:9px;font-weight:bold;color:#f5c842}
-#bok .oh{
-  font-size:7px;color:#6a78aa;margin-top:1px;text-align:center;max-width:48px;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis
-}
+#bok .ol{font-size:10px;font-weight:bold;color:#f5c842}
+#bok .oh{font-size:7px;color:#6677aa;margin-top:1px;max-width:48px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -131,42 +194,19 @@ body{display:flex;justify-content:center;align-items:center}
         <div class="hx" id="hx">XP 0</div>
         <div class="xbar"><div class="xfill" id="xf" style="width:0%"></div></div>
       </div>
-      <div class="hb"><div class="hw" id="hw">Percorso guidato</div></div>
+      <div class="hb">
+        <div class="hw" id="hw">Percorso lineare</div>
+      </div>
     </div>
 
     <div id="toast"></div>
 
-    <div id="badge">
-      <span class="bi" id="bi"></span>
-      <div class="bt" id="bt"></div>
-      <div class="bs" id="bs"></div>
-    </div>
-
-    <div id="sage-ov">
-      <div id="sage-bg"></div>
-      <div id="sage-box">
-        <div id="sage-hdr">
-          <div id="sage-face"><canvas id="sage-canvas" width="48" height="48"></canvas></div>
-          <div>
-            <div id="sage-nametag">Il Saggio</div>
-            <div id="sage-proc"></div>
-          </div>
-        </div>
-        <div id="sage-body">
-          <div id="sage-sc"></div>
-          <div id="sage-q"></div>
-          <div id="sage-ch"></div>
-          <div id="sage-prog"></div>
-        </div>
-      </div>
-    </div>
-
     <div id="result">
-      <div id="res-icon"></div>
-      <div id="res-title"></div>
-      <div id="res-xp"></div>
-      <div id="res-msg"></div>
-      <button id="btn-res" type="button">Continua &#9654;</button>
+      <div id="res-icon">⭐</div>
+      <div id="res-title">Stanza completata</div>
+      <div id="res-xp" id="res-xp">+15 XP</div>
+      <div id="res-msg" id="res-msg">Hai completato questo punto del percorso.</div>
+      <button id="btn-res" type="button">Continua</button>
     </div>
 
     <div id="ctl">
@@ -176,7 +216,7 @@ body{display:flex;justify-content:center;align-items:center}
       </div>
       <div id="bok">
         <div class="ol">OK</div>
-        <div class="oh" id="oh">percorso</div>
+        <div class="oh" id="oh">porta</div>
       </div>
     </div>
   </div>
@@ -190,11 +230,13 @@ const GH = 24;
 const GAME_W = GW * TW;
 const GAME_H = GH * TW;
 const MAX_XP_BAR = 500;
+
 const STORAGE_KEYS = {
   user: 'sq_user',
-  progress: 'sq_progressi_v6'
+  progress: 'sq_progressi_base_v1'
 };
 
+// 0 = muro, 1 = percorso
 const PATH_MAP = [
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0],
@@ -222,14 +264,14 @@ const PATH_MAP = [
   [0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
 ];
 
-const ALL_MAPS = {
+const ROLE_NODES = {
   Cameriere: [
-    { id: "ap",  label: "Apertura",      x: 7,  y: 1,  sz: 2 },
-    { id: "sal", label: "Sala",          x: 10, y: 4,  sz: 2 },
-    { id: "acc", label: "Accoglienza",   x: 4,  y: 7,  sz: 2 },
-    { id: "ven", label: "Vendita",       x: 10, y: 10, sz: 1 },
-    { id: "pre", label: "Prenotazioni",  x: 4,  y: 13, sz: 1 },
-    { id: "rec", label: "Reclami",       x: 10, y: 16, sz: 1 }
+    { id: "ap",  label: "Apertura",     x: 7,  y: 1,  sz: 2 },
+    { id: "sal", label: "Sala",         x: 10, y: 4,  sz: 2 },
+    { id: "acc", label: "Accoglienza",  x: 4,  y: 7,  sz: 2 },
+    { id: "ven", label: "Vendita",      x: 10, y: 10, sz: 1 },
+    { id: "pre", label: "Prenotazioni", x: 4,  y: 13, sz: 1 },
+    { id: "rec", label: "Reclami",      x: 10, y: 16, sz: 1 }
   ],
   Cuoco: [
     { id: "ap",  label: "Apertura",      x: 7,  y: 1,  sz: 2 },
@@ -250,83 +292,31 @@ const ALL_MAPS = {
   ]
 };
 
-const ALL_QUESTS = {
-  ap: { titolo: "Apertura e Chiusura", scenario: "Sono le 8:00. Sei il primo ad arrivare al locale.", quiz: [
-    { d: "Senti odore di gas vicino ai fornelli. Cosa fai?", o: ["Chiudo il gas, apro le finestre e chiamo il responsabile","Accendo i fornelli per controllare","Aspetto che passi","Apro solo le finestre"], r: "Chiudo il gas, apro le finestre e chiamo il responsabile", fb: "Corretto. Prima sicurezza, poi comunicazione." },
-    { d: "Il frigo segna 6 gradi. Cosa fai?", o: ["Abbasso il termostato e registro la temperatura","Aspetto che scenda","Svuoto il frigo","Non faccio niente"], r: "Abbasso il termostato e registro la temperatura", fb: "Giusto. Va corretta e registrata la temperatura." },
-    { d: "Quando firmi il registro HACCP?", o: ["Ogni mattina prima di iniziare","Solo se ci sono problemi","Ogni settimana","Quando lo chiede il responsabile"], r: "Ogni mattina prima di iniziare", fb: "Esatto. Il controllo va fatto all’inizio." }
-  ]},
-  sal: { titolo: "Servizio Sala", scenario: "È sabato sera e il locale è pieno.", quiz: [
-    { d: "Un cliente chiede un piatto non disponibile. Cosa fai?", o: ["Mi scuso e propongo un’alternativa","Dico solo che non c’è e vado via","Invento una scusa","Lo mando a scegliere da solo"], r: "Mi scuso e propongo un’alternativa", fb: "Bene. Scuse e alternativa risolvono meglio la situazione." },
-    { d: "Il conto non torna, mancano 10 euro. Cosa fai?", o: ["Riverifico e segnalo al responsabile","Chiudo il conto lo stesso","Metto 10 euro di tasca mia","Ignoro la differenza"], r: "Riverifico e segnalo al responsabile", fb: "Corretto. La verifica viene prima." }
-  ]},
-  acc: { titolo: "Accoglienza e Cassa", scenario: "Un cliente entra senza prenotazione.", quiz: [
-    { d: "Come accogli il cliente?", o: ["Lo saluto, verifico disponibilità e lo accompagno","Lo ignoro finché non si siede","Lo mando al bancone","Gli chiedo di tornare dopo"], r: "Lo saluto, verifico disponibilità e lo accompagno", fb: "Esatto. Accoglienza chiara e professionale." }
-  ]},
-  ven: { titolo: "Vendita", scenario: "Un cliente sembra indeciso sul dessert.", quiz: [
-    { d: "Come fai upselling?", o: ["Descrivo il dessert del giorno con entusiasmo","Non dico niente","Dico solo i prezzi","Porto il menu e vado via"], r: "Descrivo il dessert del giorno con entusiasmo", fb: "Giusto. La descrizione guida la scelta." }
-  ]},
-  pre: { titolo: "Gestione Prenotazioni", scenario: "Un cliente chiama per prenotare.", quiz: [
-    { d: "Il cliente ha un’allergia. Cosa annoti?", o: ["Nome, numero persone e allergia da comunicare alla cucina","Solo nome e numero persone","Solo l’allergia","Non prendo note"], r: "Nome, numero persone e allergia da comunicare alla cucina", fb: "Corretto. L’informazione va raccolta bene e passata alla cucina." }
-  ]},
-  rec: { titolo: "Gestione Reclami", scenario: "Un cliente si lamenta del piatto davanti a tutti.", quiz: [
-    { d: "Come reagisci al reclamo?", o: ["Mi scuso, ritiro il piatto e chiamo il responsabile","Dico che non è possibile","Offro uno sconto e vado via","Ignoro il cliente"], r: "Mi scuso, ritiro il piatto e chiamo il responsabile", fb: "Esatto. Ascolto, azione e supporto." }
-  ]},
-  org: { titolo: "Organizzazione", scenario: "Inizio turno.", quiz: [
-    { d: "Come organizzi la postazione?", o: ["Controllo scorte, pulisco e preparo gli strumenti","Aspetto il collega","Inizio a lavorare subito","Chiedo al responsabile"], r: "Controllo scorte, pulisco e preparo gli strumenti", fb: "Corretto. L’ordine iniziale evita errori dopo." }
-  ]},
-  fun: { titolo: "Funzionamento Attrezzature", scenario: "Un macchinario non funziona correttamente.", quiz: [
-    { d: "Il friggitore fa un rumore strano. Cosa fai?", o: ["Spengo, segnalo al responsabile e non lo uso","Continuo con cautela","Chiamo un tecnico da solo","Ignoro il rumore"], r: "Spengo, segnalo al responsabile e non lo uso", fb: "Giusto. La sicurezza viene prima." }
-  ]},
-  ord: { titolo: "Ordini Fornitori", scenario: "Arriva la merce dal fornitore.", quiz: [
-    { d: "Come controlli la merce?", o: ["Verifico quantità, qualità e temperature prima di firmare","Firmo subito","Metto tutto in magazzino e controllo dopo","Chiedo al fornitore"], r: "Verifico quantità, qualità e temperature prima di firmare", fb: "Esatto. Il controllo al ricevimento è obbligatorio." }
-  ]},
-  ser: { titolo: "Servizio", scenario: "È il momento del rush.", quiz: [
-    { d: "Arrivano 4 comande insieme. Come gestisci?", o: ["Organizzo per tavolo e tempo, comunico con la brigata","Inizio con la prima","Chiedo al responsabile","Rallento per non sbagliare"], r: "Organizzo per tavolo e tempo, comunico con la brigata", fb: "Corretto. Organizzazione e comunicazione." }
-  ]},
-  com: { titolo: "Gestione Comande", scenario: "Una comanda è illeggibile.", quiz: [
-    { d: "Non riesci a leggere la comanda. Cosa fai?", o: ["Chiamo subito chi l’ha scritta per chiarire","Preparo quello che mi sembra probabile","Aspetto che vengano","Butto la comanda"], r: "Chiamo subito chi l’ha scritta per chiarire", fb: "Giusto. Si chiarisce subito." }
-  ]},
-  ric: { titolo: "Reclami Cucina", scenario: "Un piatto torna in cucina freddo.", quiz: [
-    { d: "Il piatto è tornato freddo. Cosa fai?", o: ["Lo sistemo e avviso il responsabile","Lo rimando senza dire niente","Dico che è colpa del cameriere","Preparo un altro piatto senza avvisare"], r: "Lo sistemo e avviso il responsabile", fb: "Corretto. Serve trasparenza." }
-  ]},
-  mag: { titolo: "Magazzino", scenario: "Fai l’inventario del bar.", quiz: [
-    { d: "Trovi una bottiglia scaduta. Cosa fai?", o: ["La separo, la segno e avviso il responsabile","La butto senza dire niente","La uso lo stesso","La nascondo in fondo"], r: "La separo, la segno e avviso il responsabile", fb: "Esatto. Va isolata e segnalata." }
-  ]},
-  prep: { titolo: "Preparazioni", scenario: "Prepari il banco per il servizio.", quiz: [
-    { d: "Come prepari la macchina del caffè?", o: ["Pulisco il gruppo, faccio un flush e calibro la macinatura","Accendo e aspetto","Uso quella del turno precedente","Chiedo al collega"], r: "Pulisco il gruppo, faccio un flush e calibro la macinatura", fb: "Giusto. Pulizia e calibrazione sono fondamentali." }
-  ]}
-};
-
 function safeParse(raw, fallback) {
   try { return raw ? JSON.parse(raw) : fallback; } catch { return fallback; }
 }
 function loadStoredUser() {
-  const stored = safeParse(localStorage.getItem(STORAGE_KEYS.user), null) || safeParse(sessionStorage.getItem(STORAGE_KEYS.user), null);
-  let nome = stored?.nome || "Eroe";
-  let ruolo = stored?.ruolo || "Cameriere";
+  const stored = safeParse(localStorage.getItem(STORAGE_KEYS.user), null) ||
+                 safeParse(sessionStorage.getItem(STORAGE_KEYS.user), null);
+  let nome = stored?.nome || 'Eroe';
+  let ruolo = stored?.ruolo || 'Cameriere';
   let xp = Number(stored?.xp || 0);
-  if (ruolo === "Sala") ruolo = "Cameriere";
-  if (ruolo === "Cucina") ruolo = "Cuoco";
-  if (!ALL_MAPS[ruolo]) ruolo = "Cameriere";
+
+  if (ruolo === 'Sala') ruolo = 'Cameriere';
+  if (ruolo === 'Cucina') ruolo = 'Cuoco';
+  if (!ROLE_NODES[ruolo]) ruolo = 'Cameriere';
+
   return { nome, ruolo, xp };
 }
 function loadProgress() {
-  return safeParse(localStorage.getItem(STORAGE_KEYS.progress), { completed: {}, badges: {} });
+  return safeParse(localStorage.getItem(STORAGE_KEYS.progress), { completed:{}, badges:{} });
 }
 
 const state = {
   user: loadStoredUser(),
   progress: loadProgress(),
-  ui: {
-    sageOpen: false,
-    currentNodeId: null,
-    currentQuiz: [],
-    currentQuestionIndex: 0,
-    currentScore: 0,
-    answered: false
-  },
-  gameScene: null
+  ui: { resultOpen:false },
+  scene: null
 };
 
 function persistUser() {
@@ -339,27 +329,23 @@ function persistUser() {
 function persistProgress() {
   localStorage.setItem(STORAGE_KEYS.progress, JSON.stringify(state.progress));
 }
-function isCompleted(nodeId) { return !!state.progress.completed[nodeId]; }
-function setCompleted(nodeId, value = true) { state.progress.completed[nodeId] = value; persistProgress(); }
-function hasBadge(key) { return !!state.progress.badges[key]; }
-function setBadge(key) { state.progress.badges[key] = true; persistProgress(); }
+function isCompleted(id) { return !!state.progress.completed[id]; }
+function setCompleted(id, value=true) { state.progress.completed[id] = value; persistProgress(); }
 function qs(id) { return document.getElementById(id); }
 
-function getQuestOrder(role) {
-  return (ALL_MAPS[role] || ALL_MAPS.Cameriere).map(n => n.id);
+function getRoleNodes() {
+  return ROLE_NODES[state.user.ruolo] || ROLE_NODES.Cameriere;
 }
-function getCurrentQuestId() {
-  const order = getQuestOrder(state.user.ruolo);
-  for (const id of order) {
-    if (!isCompleted(id)) return id;
+function getCurrentNodeId() {
+  for (const node of getRoleNodes()) {
+    if (!isCompleted(node.id)) return node.id;
   }
   return null;
 }
-function isUnlocked(nodeId) {
-  const order = getQuestOrder(state.user.ruolo);
-  const current = getCurrentQuestId();
+function isUnlocked(id) {
+  const current = getCurrentNodeId();
   if (!current) return true;
-  return nodeId === current || isCompleted(nodeId);
+  return id === current || isCompleted(id);
 }
 
 function updateHUD() {
@@ -368,171 +354,51 @@ function updateHUD() {
   qs('xf').style.width = Math.min((state.user.xp / MAX_XP_BAR) * 100, 100) + '%';
 }
 
-function toast(msg, dur = 2600) {
+function toast(msg, dur=2200) {
   const el = qs('toast');
   el.textContent = msg;
   el.style.opacity = '1';
-  clearTimeout(window.__sqToastTimer);
-  window.__sqToastTimer = setTimeout(() => { el.style.opacity = '0'; }, dur);
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(() => el.style.opacity = '0', dur);
 }
-function showBadge(icon, title, subtitle) {
-  qs('bi').textContent = icon;
-  qs('bt').textContent = title;
-  qs('bs').textContent = subtitle;
-  const el = qs('badge');
-  el.classList.add('show');
-  clearTimeout(window.__sqBadgeTimer);
-  window.__sqBadgeTimer = setTimeout(() => { el.classList.remove('show'); }, 2600);
-}
-function checkBadgeUnlocks() {
-  if (state.user.xp >= 100 && !hasBadge('bdg1')) { setBadge('bdg1'); setTimeout(() => showBadge('🥉', 'Badge Bronzo', 'Prime sfide superate'), 350); }
-  if (state.user.xp >= 250 && !hasBadge('bdg2')) { setBadge('bdg2'); setTimeout(() => showBadge('🥈', 'Badge Argento', 'Stai crescendo'), 350); }
-  if (state.user.xp >= 500 && !hasBadge('bdg3')) { setBadge('bdg3'); setTimeout(() => showBadge('🥇', 'Badge Oro', 'Percorso completato'), 350); }
-}
-function closeResult() { qs('result').classList.remove('show'); }
-qs('btn-res').addEventListener('click', closeResult);
 
-function openSage(nodeId) {
-  const quest = ALL_QUESTS[nodeId];
-  if (!quest) { toast('Quiz non trovato'); return; }
-  state.ui.sageOpen = true;
-  state.ui.currentNodeId = nodeId;
-  state.ui.currentQuiz = quest.quiz;
-  state.ui.currentQuestionIndex = 0;
-  state.ui.currentScore = 0;
-  state.ui.answered = false;
-
-  qs('sage-nametag').textContent = `Il Saggio — ${quest.titolo}`;
-  qs('sage-proc').textContent = quest.titolo;
-  qs('sage-sc').style.color = '#8899bb';
-  qs('sage-sc').textContent = quest.scenario || '';
-  qs('sage-ov').classList.add('show');
-
-  renderSageQuestion();
-}
-function renderSageQuestion() {
-  state.ui.answered = false;
-  const q = state.ui.currentQuiz[state.ui.currentQuestionIndex];
-  if (!q) return;
-  qs('sage-q').textContent = q.d;
-  qs('sage-prog').textContent = `Domanda ${state.ui.currentQuestionIndex + 1} di ${state.ui.currentQuiz.length}`;
-  qs('sage-sc').style.color = '#8899bb';
-  const container = qs('sage-ch');
-  container.innerHTML = '';
-  q.o.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'sage-btn';
-    btn.textContent = opt;
-    btn.addEventListener('click', () => answerSage(opt, q.r, q.fb));
-    container.appendChild(btn);
-  });
-}
-function answerSage(chosen, correct, feedback) {
-  if (state.ui.answered) return;
-  state.ui.answered = true;
-  const isCorrect = chosen.trim() === correct.trim();
-  if (isCorrect) state.ui.currentScore++;
-
-  document.querySelectorAll('.sage-btn').forEach(btn => {
-    btn.disabled = true;
-    if (btn.textContent.trim() === correct.trim()) {
-      btn.style.background = 'rgba(46,204,113,.15)';
-      btn.style.borderColor = '#2ecc71';
-      btn.style.color = '#2ecc71';
-    } else if (btn.textContent.trim() === chosen.trim() && !isCorrect) {
-      btn.style.background = 'rgba(231,76,60,.12)';
-      btn.style.borderColor = '#e74c3c';
-      btn.style.color = '#e74c3c';
-    }
-  });
-
-  qs('sage-sc').style.color = isCorrect ? '#2ecc71' : '#e74c3c';
-  qs('sage-sc').textContent = (isCorrect ? '✓ Corretto. ' : '✗ Risposta errata. ') + feedback;
-
-  setTimeout(() => {
-    if (state.ui.currentQuestionIndex < state.ui.currentQuiz.length - 1) {
-      state.ui.currentQuestionIndex++;
-      renderSageQuestion();
-    } else {
-      finishSageQuiz();
-    }
-  }, 1500);
-}
-function finishSageQuiz() {
-  qs('sage-ov').classList.remove('show');
-  state.ui.sageOpen = false;
-
-  const total = state.ui.currentQuiz.length;
-  const correct = state.ui.currentScore;
-  const percentage = Math.round((correct / total) * 100);
-  const passed = percentage >= 60;
-  const xpGain = passed ? correct * 15 : 0;
-
-  if (passed) {
-    state.user.xp += xpGain;
-    persistUser();
-    setCompleted(state.ui.currentNodeId, true);
-    updateHUD();
-    checkBadgeUnlocks();
-    if (state.gameScene) state.gameScene.refreshNodes();
-  }
-
-  qs('res-icon').textContent = percentage === 100 ? '🏆' : passed ? '⭐' : '😅';
-  qs('res-title').textContent = passed ? 'Superato!' : 'Riprova!';
-  qs('res-xp').textContent = `${correct}/${total} corrette${passed ? ` · +${xpGain} XP` : ''}`;
-  qs('res-msg').textContent = passed
-    ? `Hai risposto correttamente al ${percentage}%. Vai alla prossima porta.`
-    : 'Per superare la stanza ti serve almeno il 60%.';
+function openResult(nodeLabel, xpGain) {
+  state.ui.resultOpen = true;
+  qs('res-icon').textContent = '⭐';
+  qs('res-title').textContent = `${nodeLabel} completata`;
+  qs('res-xp').textContent = `+${xpGain} XP`;
+  qs('res-msg').textContent = 'Base pronta. In seguito qui collegherai il quiz reale di questa porta.';
   qs('result').classList.add('show');
 }
+function closeResult() {
+  state.ui.resultOpen = false;
+  qs('result').classList.remove('show');
+  state.scene?.refreshNodes();
+}
+qs('btn-res').addEventListener('click', closeResult);
 
-const sageFace = {
-  timer: null,
-  frame: 0,
-  draw() {
-    const c = qs('sage-canvas');
-    const ctx = c.getContext('2d');
-    ctx.clearRect(0, 0, 48, 48);
-    ctx.fillStyle = '#0f1730'; ctx.fillRect(0, 0, 48, 48);
-    ctx.fillStyle = '#d4a520'; ctx.fillRect(18, 6, 12, 6);
-    ctx.fillStyle = '#f0c89a'; ctx.fillRect(14, 12, 20, 18);
-    ctx.fillStyle = '#3e2a1d'; ctx.fillRect(14, 10, 20, 6);
-    ctx.fillStyle = '#111'; ctx.fillRect(19, 19, 2, 2); ctx.fillRect(27, 19, 2, 2);
-    const mouthY = this.frame % 2 === 0 ? 25 : 24;
-    ctx.fillRect(21, mouthY, 6, 2);
-    this.frame++;
-  },
-  start() { this.stop(); this.draw(); this.timer = setInterval(() => this.draw(), 200); },
-  stop() { if (this.timer) clearInterval(this.timer); this.timer = null; }
-};
-sageFace.start();
-window.addEventListener('beforeunload', () => sageFace.stop());
-
-class DungeonScene extends Phaser.Scene {
+class BaseScene extends Phaser.Scene {
   constructor() {
-    super('Dungeon');
+    super('BaseScene');
     this.jActive = false;
-    this.jv = { x: 0, y: 0 };
+    this.jDir = null; // up/down/left/right
     this.near = null;
-    this.nodePixels = {};
-    this.nodeGfx = {};
-    this.doorInteract = [];
-    this.torches = [];
-    this._handlers = [];
+    this.nodes = [];
+    this.nodeViews = {};
+    this.pathGlowPulse = 0;
+    this.animTimer = 0;
     this.walkFrame = 0;
     this.idleFrame = 0;
-    this.animTimer = 0;
-    this.pathGlowPulse = 0;
+    this._handlers = [];
   }
 
   preload() {
     const prog = this.add.graphics();
-    const bg = this.add.rectangle(GAME_W / 2, GAME_H / 2, GAME_W, GAME_H, 0x07070f);
-    const txt = this.add.text(GAME_W / 2, GAME_H / 2 - 16, 'Carico StaffQuest...', {
-      fontSize: '9px',
-      color: '#f5c842',
-      fontFamily: 'monospace'
+    const bg = this.add.rectangle(GAME_W/2, GAME_H/2, GAME_W, GAME_H, 0x08101d);
+    const txt = this.add.text(GAME_W/2, GAME_H/2 - 16, 'Carico base StaffQuest...', {
+      fontSize:'9px',
+      color:'#f5c842',
+      fontFamily:'monospace'
     }).setOrigin(0.5);
 
     const drawProgress = (v) => {
@@ -551,11 +417,6 @@ class DungeonScene extends Phaser.Scene {
       this.load.off('progress', drawProgress);
     });
 
-    this.load.spritesheet('wallsFloor', 'assets/walls_floor.png', { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet('fire2', 'assets/fire_animation2.png', { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet('objects', 'assets/Objects.png', { frameWidth: 16, frameHeight: 16 });
-    this.load.spritesheet('cracksFloor', 'assets/decorative_cracks_floor.png', { frameWidth: 16, frameHeight: 16 });
-
     for (let i = 0; i < 30; i++) {
       const num = String(i).padStart(3, '0');
       this.load.image('walk_' + i, 'assets/warrior_walk/0_Warrior_Walk_' + num + '.png');
@@ -567,16 +428,15 @@ class DungeonScene extends Phaser.Scene {
   }
 
   create() {
-    state.gameScene = this;
-    this.nodes = (ALL_MAPS[state.user.ruolo] || ALL_MAPS.Cameriere);
+    state.scene = this;
+    this.nodes = getRoleNodes();
 
-    this.createAnims();
-    this.buildFloor();
+    this.buildSimpleMap();
     this.buildNodes();
     this.spawnPlayer();
     this.setupInput();
-    this.setupJoystick();
-    this.setupInteractButton();
+    this.setupJoystick4Dir();
+    this.setupOkButton();
 
     this.cameras.main.setRoundPixels(true);
     this.cameras.main.startFollow(this.pp, true, 1, 1);
@@ -584,109 +444,86 @@ class DungeonScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, GAME_W, GAME_H);
 
     updateHUD();
-    setTimeout(() => toast('Segui il percorso illuminato fino alla porta attuale'), 700);
-
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cleanupHandlers());
-    this.events.once(Phaser.Scenes.Events.DESTROY, () => this.cleanupHandlers());
+    this.refreshNodes();
+    toast('Joystick a 4 direzioni: segui il percorso verso la porta illuminata');
   }
 
-  createAnims() {
-    if (!this.anims.exists('torchLoop')) {
-      this.anims.create({
-        key: 'torchLoop',
-        frames: this.anims.generateFrameNumbers('fire2', { start: 0, end: 5 }),
-        frameRate: 10,
-        repeat: -1
-      });
-    }
-  }
+  buildSimpleMap() {
+    // base
+    this.bgGfx = this.add.graphics().setDepth(0);
+    this.bgGfx.fillStyle(0x0a1324);
+    this.bgGfx.fillRect(0, 0, GAME_W, GAME_H);
 
-  buildFloor() {
-    const FLOOR_FRAMES = [42, 43, 55, 56];
-    const WALL_FRAMES = [0, 1, 13, 14];
-    const CRACK_FRAMES = [0, 1, 2, 8, 9, 10];
+    // celle
+    for (let r = 0; r < GH; r++) {
+      for (let c = 0; c < GW; c++) {
+        const x = c * TW;
+        const y = r * TW;
 
-    const rng = ((seed) => {
-      let x = seed >>> 0;
-      return () => {
-        x = (x * 1664525 + 1013904223) >>> 0;
-        return x;
-      };
-    })(7331);
+        if (PATH_MAP[r][c] === 1) {
+          this.bgGfx.fillStyle(0x22314f);
+          this.bgGfx.fillRect(x, y, TW, TW);
 
-    for (let row = 0; row < GH; row++) {
-      for (let col = 0; col < GW; col++) {
-        const x = col * TW + TW / 2;
-        const y = row * TW + TW / 2;
-        const isPath = PATH_MAP[row][col] === 1;
+          this.bgGfx.fillStyle(0x314772);
+          this.bgGfx.fillRect(x, y, TW, 2);
 
-        if (isPath) {
-          const frame = FLOOR_FRAMES[rng() % FLOOR_FRAMES.length];
-          this.add.image(x, y, 'wallsFloor', frame).setDepth(0).setPipeline('TextureTintPipeline');
-
-          if ((rng() % 100) < 5) {
-            const crack = CRACK_FRAMES[rng() % CRACK_FRAMES.length];
-            this.add.image(x, y, 'cracksFloor', crack).setDepth(0.4).setAlpha(0.16);
-          }
+          this.bgGfx.fillStyle(0x1a2640);
+          this.bgGfx.fillRect(x, y + TW - 2, TW, 2);
         } else {
-          const frame = WALL_FRAMES[rng() % WALL_FRAMES.length];
-          this.add.image(x, y, 'wallsFloor', frame).setDepth(0);
+          this.bgGfx.fillStyle(0x0c1526);
+          this.bgGfx.fillRect(x, y, TW, TW);
 
-          const dark = this.add.graphics().setDepth(0.5);
-          dark.fillStyle(0x02040a, 0.46);
-          dark.fillRect(x - 8, y - 8, 16, 16);
+          this.bgGfx.fillStyle(0x08101d);
+          this.bgGfx.fillRect(x + 1, y + 1, TW - 2, TW - 2);
         }
       }
     }
 
-    this.pathOverlay = this.add.graphics().setDepth(0.9);
-    this.pathCurrentOverlay = this.add.graphics().setDepth(1.0);
-    this.redrawPathHighlights();
+    this.pathBase = this.add.graphics().setDepth(1);
+    this.pathCurrent = this.add.graphics().setDepth(1.1);
   }
 
-  redrawPathHighlights() {
-    const currentId = getCurrentQuestId();
-    const currentNode = this.nodes.find(n => n.id === currentId);
+  redrawPath() {
+    this.pathBase.clear();
+    this.pathCurrent.clear();
 
-    this.pathOverlay.clear();
-    this.pathCurrentOverlay.clear();
-
-    for (let row = 0; row < GH; row++) {
-      for (let col = 0; col < GW; col++) {
-        if (PATH_MAP[row][col] !== 1) continue;
-        const x = col * TW;
-        const y = row * TW;
-
-        this.pathOverlay.fillStyle(0x4e6ea3, 0.10);
-        this.pathOverlay.fillRect(x, y, TW, TW);
+    for (let r = 0; r < GH; r++) {
+      for (let c = 0; c < GW; c++) {
+        if (PATH_MAP[r][c] !== 1) continue;
+        const x = c * TW;
+        const y = r * TW;
+        this.pathBase.fillStyle(0x6f93cf, 0.10);
+        this.pathBase.fillRect(x + 2, y + 2, TW - 4, TW - 4);
       }
     }
 
-    if (currentNode) {
-      const pulse = 0.12 + Math.sin(this.pathGlowPulse) * 0.05;
-      const routeCells = this.getPathToNode(currentNode.x, currentNode.y);
-      routeCells.forEach(({c,r}) => {
-        const x = c * TW;
-        const y = r * TW;
-        this.pathCurrentOverlay.fillStyle(0xf5c842, pulse);
-        this.pathCurrentOverlay.fillRect(x, y, TW, TW);
-      });
-    }
+    const currentId = getCurrentNodeId();
+    const currentNode = this.nodes.find(n => n.id === currentId);
+    if (!currentNode) return;
+
+    const pathCells = this.getPathToNode(currentNode.x, currentNode.y);
+    const pulse = 0.16 + Math.sin(this.pathGlowPulse) * 0.05;
+
+    pathCells.forEach(({c,r}) => {
+      const x = c * TW;
+      const y = r * TW;
+      this.pathCurrent.fillStyle(0xf5c842, pulse);
+      this.pathCurrent.fillRect(x + 3, y + 3, TW - 6, TW - 6);
+    });
   }
 
   getPathToNode(targetC, targetR) {
-    const key = (c,r) => `${c},${r}`;
     const start = { c: 7, r: 3 };
-    const queue = [start];
-    const visited = new Set([key(start.c, start.r)]);
-    const prev = new Map();
-
+    const key = (c,r) => `${c},${r}`;
     const dirs = [
       {dc:1,dr:0},
       {dc:-1,dr:0},
       {dc:0,dr:1},
       {dc:0,dr:-1}
     ];
+    const queue = [start];
+    const visited = new Set([key(start.c, start.r)]);
+    const prev = new Map();
 
     while (queue.length) {
       const cur = queue.shift();
@@ -697,19 +534,18 @@ class DungeonScene extends Phaser.Scene {
         const nr = cur.r + d.dr;
         if (nr < 0 || nr >= GH || nc < 0 || nc >= GW) continue;
         if (PATH_MAP[nr][nc] !== 1) continue;
-
         const k = key(nc, nr);
         if (visited.has(k)) continue;
         visited.add(k);
         prev.set(k, cur);
-        queue.push({ c: nc, r: nr });
+        queue.push({ c:nc, r:nr });
       }
     }
 
     const out = [];
-    let cur = { c: targetC, r: targetR };
     if (!visited.has(key(targetC, targetR))) return out;
 
+    let cur = { c: targetC, r: targetR };
     while (!(cur.c === start.c && cur.r === start.r)) {
       out.push(cur);
       cur = prev.get(key(cur.c, cur.r));
@@ -721,153 +557,76 @@ class DungeonScene extends Phaser.Scene {
   }
 
   buildNodes() {
-    this.nodePixels = {};
-    this.nodeGfx = {};
-    this.doorInteract = [];
-    this.torches = [];
+    this.nodeViews = {};
 
-    this.nodes.forEach(n => {
-      const px = n.x * TW + TW / 2;
-      const py = n.y * TW + TW / 2;
-      this.nodePixels[n.id] = { x: px, y: py };
-    });
+    this.nodes.forEach(node => {
+      const x = node.x * TW + TW / 2;
+      const y = node.y * TW + TW / 2;
+      const big = node.sz === 2;
+      const w = big ? 18 : 15;
+      const h = big ? 18 : 15;
 
-    this.nodes.forEach(n => {
-      const p = this.nodePixels[n.id];
-      const done = isCompleted(n.id);
-      const unlocked = isUnlocked(n.id);
-      const current = getCurrentQuestId() === n.id;
+      const glow = this.add.graphics().setDepth(2);
+      const box = this.add.graphics().setDepth(3);
+      const label = this.add.text(x, y - (big ? 12 : 10), node.label, {
+        fontSize: '6px',
+        color: '#cdd8f0',
+        fontFamily: 'monospace',
+        backgroundColor: 'rgba(5,13,36,0.95)',
+        padding: { x: 2, y: 1 }
+      }).setOrigin(0.5, 1).setDepth(4);
 
-      const big = n.sz === 2;
-      const doorW = big ? 18 : 15;
-      const doorH = big ? 22 : 18;
-      const glowRadius = big ? 11 : 9;
-
-      const glow = this.add.graphics().setDepth(2.6);
-      this.drawDoorGlow(glow, p.x, p.y, glowRadius, done, unlocked, current);
-
-      const g = this.add.graphics().setDepth(3);
-      this.drawDoorNode(g, p.x, p.y, doorW, doorH, done, unlocked, current);
-
-      const label = this.add.text(
-        p.x,
-        p.y - (big ? 13 : 11),
-        n.label,
-        {
-          fontSize: '5px',
-          color: done ? '#2ecc71' : current ? '#f5c842' : unlocked ? '#c7d2f2' : '#6b7291',
-          fontFamily: 'monospace',
-          align: 'center',
-          backgroundColor: 'rgba(5,13,36,0.90)',
-          padding: { x: 2, y: 1 }
-        }
-      ).setOrigin(0.5, 1).setDepth(4);
-
-      this.nodeGfx[n.id] = {
-        g, glow, label,
-        x: p.x, y: p.y,
-        w: doorW, h: doorH,
-        sz: big ? 14 : 11,
-        isDone: done
-      };
-
-      if (big && (current || done)) {
-        const torch = this.add.sprite(p.x + 13, p.y - 1, 'fire2', 0)
-          .setDepth(4)
-          .setScale(0.7);
-        torch.play('torchLoop');
-        if (!current && !done) torch.setAlpha(0.35);
-        this.torches.push({ id: n.id, sprite: torch });
-      }
-
-      this.doorInteract.push({
-        x: p.x,
-        y: p.y,
-        id: n.id,
-        lbl: n.label.replace(/\n/g, ' '),
-        sz: big ? 14 : 11
-      });
+      this.nodeViews[node.id] = { x, y, w, h, glow, box, label, big };
     });
   }
 
-  drawDoorGlow(g, x, y, r, done, unlocked, current) {
-    g.clear();
+  drawNode(id) {
+    const view = this.nodeViews[id];
+    const node = this.nodes.find(n => n.id === id);
+    if (!view || !node) return;
+
+    const done = isCompleted(id);
+    const current = getCurrentNodeId() === id;
+    const unlocked = isUnlocked(id);
+
+    view.glow.clear();
+    view.box.clear();
+
     if (done) {
-      g.fillStyle(0x2ecc71, 0.10);
-      g.fillCircle(x, y + 2, r);
+      view.glow.fillStyle(0x2ecc71, 0.16);
+      view.glow.fillCircle(view.x, view.y, view.big ? 12 : 10);
     } else if (current) {
-      g.fillStyle(0xf5c842, 0.12 + Math.sin(this.pathGlowPulse) * 0.04);
-      g.fillCircle(x, y + 2, r + 1);
+      view.glow.fillStyle(0xf5c842, 0.18 + Math.sin(this.pathGlowPulse) * 0.05);
+      view.glow.fillCircle(view.x, view.y, view.big ? 13 : 11);
     } else if (unlocked) {
-      g.fillStyle(0x90a8d8, 0.06);
-      g.fillCircle(x, y + 2, r - 1);
+      view.glow.fillStyle(0x8ca4d9, 0.08);
+      view.glow.fillCircle(view.x, view.y, view.big ? 11 : 9);
     }
-  }
 
-  drawDoorNode(g, x, y, w, h, done, unlocked, current) {
-    g.clear();
+    const alpha = done || current || unlocked ? 1 : 0.5;
+    const border = done ? 0x2ecc71 : current ? 0xf5c842 : unlocked ? 0x90a8d8 : 0x4d5670;
+    const fill = done ? 0x224a31 : current ? 0x7a4a1d : unlocked ? 0x2c3852 : 0x242836;
 
-    const frameColor = unlocked ? 0x46506b : 0x2a3044;
-    const innerColor = done ? 0x2d6a3d : current ? 0x7a3f1d : unlocked ? 0x5a3118 : 0x3d2a20;
-    const accentColor = done ? 0x2ecc71 : current ? 0xd4a520 : unlocked ? 0x9cb2dd : 0x666666;
-    const alpha = unlocked || done ? 1 : 0.72;
+    view.box.fillStyle(0x0a0f18, 0.25 * alpha);
+    view.box.fillRoundedRect(view.x - view.w/2 + 1, view.y - view.h/2 + 2, view.w, view.h, 3);
 
-    g.fillStyle(0x000000, 0.22 * alpha);
-    g.fillRoundedRect(x - w/2 + 1, y - h/2 + 2, w, h, 3);
+    view.box.fillStyle(0x192132, alpha);
+    view.box.fillRoundedRect(view.x - view.w/2 - 2, view.y - view.h/2 - 2, view.w + 4, view.h + 4, 3);
 
-    g.fillStyle(0x1b2236, alpha);
-    g.fillRoundedRect(x - w/2 - 2, y - h/2 - 2, w + 4, h + 4, 3);
+    view.box.fillStyle(fill, alpha);
+    view.box.fillRoundedRect(view.x - view.w/2, view.y - view.h/2, view.w, view.h, 3);
 
-    g.fillStyle(frameColor, alpha);
-    g.fillRoundedRect(x - w/2, y - h/2, w, h, 3);
+    view.box.lineStyle(1, border, alpha);
+    view.box.strokeRoundedRect(view.x - view.w/2, view.y - view.h/2, view.w, view.h, 3);
 
-    g.fillStyle(innerColor, alpha);
-    g.fillRoundedRect(x - w/2 + 2, y - h/2 + 2, w - 4, h - 4, 2);
+    view.box.fillStyle(border, alpha);
+    view.box.fillCircle(view.x, view.y, 2);
 
-    g.fillStyle(0x000000, 0.10 * alpha);
-    g.fillRoundedRect(x - w/2 + 4, y - h/2 + 4, w - 8, (h - 10) / 2, 2);
-    g.fillRoundedRect(x - w/2 + 4, y + 1, w - 8, (h - 12) / 2, 2);
-
-    g.fillStyle(accentColor, alpha);
-    g.fillCircle(x + w/2 - 5, y + 1, 2);
-
-    g.fillStyle(0xffffff, 0.07 * alpha);
-    g.fillRect(x - w/2 + 2, y - h/2 + 2, w - 4, 2);
-
-    if (done) {
-      g.fillStyle(0x2ecc71, 0.95);
-      g.fillCircle(x, y - h/2 - 4, 3.5);
-    } else if (current) {
-      g.lineStyle(1, 0xf5c842, 0.8);
-      g.strokeRoundedRect(x - w/2 - 3, y - h/2 - 3, w + 6, h + 6, 4);
-    }
+    view.label.setColor(done ? '#2ecc71' : current ? '#f5c842' : unlocked ? '#cdd8f0' : '#6c7796');
   }
 
   refreshNodes() {
-    this.redrawPathHighlights();
-    const currentId = getCurrentQuestId();
-
-    this.nodes.forEach(n => {
-      const info = this.nodeGfx[n.id];
-      if (!info) return;
-
-      const done = isCompleted(n.id);
-      const unlocked = isUnlocked(n.id);
-      const current = currentId === n.id;
-
-      info.isDone = done;
-
-      this.drawDoorNode(info.g, info.x, info.y, info.w, info.h, done, unlocked, current);
-      this.drawDoorGlow(info.glow, info.x, info.y, n.sz === 2 ? 11 : 9, done, unlocked, current);
-
-      info.label.setColor(done ? '#2ecc71' : current ? '#f5c842' : unlocked ? '#c7d2f2' : '#6b7291');
-    });
-
-    this.torches.forEach(t => {
-      const current = currentId === t.id;
-      const done = isCompleted(t.id);
-      t.sprite.setAlpha(current || done ? 1 : 0.35);
-    });
+    this.nodes.forEach(n => this.drawNode(n.id));
   }
 
   spawnPlayer() {
@@ -904,11 +663,12 @@ class DungeonScene extends Phaser.Scene {
     this.enter = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   }
 
-  setupJoystick() {
+  setupJoystick4Dir() {
     const joy = qs('joy');
     const knob = qs('jk');
     if (!joy || !knob) return;
-    const R = 26;
+
+    const R = 34;
 
     const getPoint = (e) => {
       const t = e.touches ? e.touches[0] : e;
@@ -919,33 +679,53 @@ class DungeonScene extends Phaser.Scene {
       };
     };
 
+    const setDir = (x, y) => {
+      const ax = Math.abs(x);
+      const ay = Math.abs(y);
+
+      if (Math.max(ax, ay) < 10) {
+        this.jDir = null;
+        knob.style.transform = 'translate(-50%,-50%)';
+        return;
+      }
+
+      if (ax > ay) {
+        this.jDir = x > 0 ? 'right' : 'left';
+      } else {
+        this.jDir = y > 0 ? 'down' : 'up';
+      }
+
+      let kx = 0, ky = 0;
+      if (this.jDir === 'left') kx = -R;
+      if (this.jDir === 'right') kx = R;
+      if (this.jDir === 'up') ky = -R;
+      if (this.jDir === 'down') ky = R;
+
+      knob.style.transform = `translate(calc(-50% + ${kx}px), calc(-50% + ${ky}px))`;
+    };
+
     const onStart = (e) => {
-      if (state.ui.sageOpen) return;
+      if (state.ui.resultOpen) return;
       e.preventDefault?.();
       this.jActive = true;
+      const p = getPoint(e);
+      setDir(p.x, p.y);
     };
     const onMove = (e) => {
-      if (!this.jActive || state.ui.sageOpen) return;
+      if (!this.jActive || state.ui.resultOpen) return;
       e.preventDefault?.();
-
       const p = getPoint(e);
-      const dist = Math.min(Math.hypot(p.x, p.y), R);
-      const ang = Math.atan2(p.y, p.x);
-      const cx = Math.cos(ang) * dist;
-      const cy = Math.sin(ang) * dist;
-
-      knob.style.transform = `translate(calc(-50% + ${cx}px), calc(-50% + ${cy}px))`;
-      this.jv = { x: cx / R, y: cy / R };
+      setDir(p.x, p.y);
     };
     const onEnd = () => {
       this.jActive = false;
-      this.jv = { x: 0, y: 0 };
+      this.jDir = null;
       knob.style.transform = 'translate(-50%,-50%)';
     };
 
-    joy.addEventListener('touchstart', onStart, { passive: false });
-    joy.addEventListener('touchmove', onMove, { passive: false });
-    joy.addEventListener('touchend', onEnd, { passive: false });
+    joy.addEventListener('touchstart', onStart, { passive:false });
+    joy.addEventListener('touchmove', onMove, { passive:false });
+    joy.addEventListener('touchend', onEnd, { passive:false });
     joy.addEventListener('mousedown', onStart);
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mouseup', onEnd);
@@ -958,13 +738,14 @@ class DungeonScene extends Phaser.Scene {
     this._handlers.push(() => window.removeEventListener('mouseup', onEnd));
   }
 
-  setupInteractButton() {
+  setupOkButton() {
     const btn = qs('bok');
     if (!btn) return;
+
     const onTouch = (e) => { e.preventDefault(); this.interact(); };
     const onMouse = () => this.interact();
 
-    btn.addEventListener('touchstart', onTouch, { passive: false });
+    btn.addEventListener('touchstart', onTouch, { passive:false });
     btn.addEventListener('mousedown', onMouse);
 
     this._handlers.push(() => btn.removeEventListener('touchstart', onTouch));
@@ -1001,35 +782,37 @@ class DungeonScene extends Phaser.Scene {
 
   getMovementVector() {
     let x = 0, y = 0;
-    if (this.curs.left.isDown || this.wk.lt.isDown) x -= 1;
-    if (this.curs.right.isDown || this.wk.rt.isDown) x += 1;
-    if (this.curs.up.isDown || this.wk.up.isDown) y -= 1;
-    if (this.curs.down.isDown || this.wk.dn.isDown) y += 1;
 
-    if (this.jActive && (Math.abs(this.jv.x) > 0.08 || Math.abs(this.jv.y) > 0.08)) {
-      x = this.jv.x;
-      y = this.jv.y;
-    }
+    if (this.curs.left.isDown || this.wk.lt.isDown) x = -1;
+    else if (this.curs.right.isDown || this.wk.rt.isDown) x = 1;
+    else if (this.curs.up.isDown || this.wk.up.isDown) y = -1;
+    else if (this.curs.down.isDown || this.wk.dn.isDown) y = 1;
 
-    const len = Math.hypot(x, y);
-    if (len > 0) {
-      x /= len;
-      y /= len;
-    }
+    if (this.jDir === 'left') { x = -1; y = 0; }
+    else if (this.jDir === 'right') { x = 1; y = 0; }
+    else if (this.jDir === 'up') { x = 0; y = -1; }
+    else if (this.jDir === 'down') { x = 0; y = 1; }
+
     return { x, y };
   }
 
   interact() {
-    if (state.ui.sageOpen || !this.near) return;
+    if (state.ui.resultOpen || !this.near) return;
     if (!isUnlocked(this.near.id)) {
       toast('Prima completa la porta precedente');
       return;
     }
     if (isCompleted(this.near.id)) {
-      toast('Stanza già completata');
+      toast('Porta già completata');
       return;
     }
-    openSage(this.near.id);
+
+    const xpGain = 15;
+    setCompleted(this.near.id, true);
+    state.user.xp += xpGain;
+    persistUser();
+    updateHUD();
+    openResult(this.near.label, xpGain);
   }
 
   updatePlayerAnimation(vx, vy, delta) {
@@ -1037,7 +820,7 @@ class DungeonScene extends Phaser.Scene {
     this.animTimer += delta;
 
     if (moving) {
-      if (this.animTimer > 70) {
+      if (this.animTimer > 90) {
         this.animTimer = 0;
         this.walkFrame = (this.walkFrame + 1) % 30;
         const key = 'walk_' + this.walkFrame;
@@ -1045,7 +828,7 @@ class DungeonScene extends Phaser.Scene {
       }
       this.pp.setFlipX(vx < 0);
     } else {
-      if (this.animTimer > 150) {
+      if (this.animTimer > 170) {
         this.animTimer = 0;
         this.idleFrame = (this.idleFrame + 1) % 8;
         const key = 'idle_' + this.idleFrame;
@@ -1055,30 +838,41 @@ class DungeonScene extends Phaser.Scene {
     }
   }
 
-  updateNearbyDoor() {
+  updateNearNode() {
     let near = null;
     let nearest = Infinity;
-    this.doorInteract.forEach(obj => {
-      if (!isUnlocked(obj.id) && !isCompleted(obj.id)) return;
-      const d = Phaser.Math.Distance.Between(this.pp.x, this.pp.y, obj.x, obj.y);
-      if (d < (obj.sz + 8) && d < nearest) {
+    const currentId = getCurrentNodeId();
+
+    this.nodes.forEach(node => {
+      const x = node.x * TW + TW / 2;
+      const y = node.y * TW + TW / 2;
+      const d = Phaser.Math.Distance.Between(this.pp.x, this.pp.y, x, y);
+      if (d < 16 && d < nearest) {
         nearest = d;
-        near = obj;
+        near = node;
       }
     });
+
     this.near = near;
 
     const okBtn = qs('bok');
     const okHint = qs('oh');
-    if (okBtn) okBtn.style.opacity = near ? '1' : '0.35';
-    if (okHint) okHint.textContent = near ? near.lbl : 'percorso';
+
+    if (near) {
+      okBtn.style.opacity = '1';
+      okHint.textContent = near.id === currentId ? near.label : isCompleted(near.id) ? 'fatto' : 'bloccata';
+    } else {
+      okBtn.style.opacity = '0.35';
+      okHint.textContent = 'porta';
+    }
   }
 
   update(time, delta) {
     this.pathGlowPulse += delta * 0.01;
-    this.redrawPathHighlights();
+    this.redrawPath();
+    this.refreshNodes();
 
-    if (state.ui.sageOpen) {
+    if (state.ui.resultOpen) {
       this.pp.setVelocity(0, 0);
       return;
     }
@@ -1100,11 +894,10 @@ class DungeonScene extends Phaser.Scene {
 
     this.pp.x = Math.round(this.pp.x);
     this.pp.y = Math.round(this.pp.y);
+    this.ptag.x = this.pp.x;
+    this.ptag.y = this.pp.y - 14;
 
-    this.ptag.x = Math.round(this.pp.x);
-    this.ptag.y = Math.round(this.pp.y - 14);
-
-    this.updateNearbyDoor();
+    this.updateNearNode();
 
     if (Phaser.Input.Keyboard.JustDown(this.spc) || Phaser.Input.Keyboard.JustDown(this.enter)) {
       this.interact();
@@ -1117,19 +910,16 @@ updateHUD();
 new Phaser.Game({
   type: Phaser.CANVAS,
   parent: 'ga',
-  backgroundColor: '#050814',
+  backgroundColor: '#08101d',
   pixelArt: true,
   roundPixels: true,
   antialias: false,
   antialiasGL: false,
   physics: {
     default: 'arcade',
-    arcade: {
-      gravity: { y: 0 },
-      debug: false
-    }
+    arcade: { gravity:{ y:0 }, debug:false }
   },
-  scene: [DungeonScene],
+  scene: [BaseScene],
   scale: {
     mode: Phaser.Scale.NONE,
     width: GAME_W,
@@ -1137,21 +927,32 @@ new Phaser.Game({
   }
 });
 
-// canvas upscale intero per evitare blur
 (function applyIntegerCanvasScale() {
   const fit = () => {
     const canvas = document.querySelector('#ga canvas');
+    const root = document.getElementById('root');
     const host = document.getElementById('ga');
-    if (!canvas || !host) return;
+    if (!canvas || !root || !host) return;
 
-    const rect = host.getBoundingClientRect();
-    const scale = Math.max(1, Math.floor(Math.min(rect.width / GAME_W, rect.height / GAME_H)));
+    const rootRect = root.getBoundingClientRect();
+    const hostRect = host.getBoundingClientRect();
+
+    const usableWidth = Math.min(window.innerWidth, rootRect.width, 560);
+    const usableHeight = Math.min(window.innerHeight, hostRect.height);
+
+    let scale = Math.floor(Math.min(usableWidth / GAME_W, usableHeight / GAME_H));
+    if (usableWidth >= GAME_W * 2 && usableHeight >= GAME_H * 2) scale = Math.max(scale, 2);
+    scale = Math.max(1, scale);
+
     canvas.style.width = (GAME_W * scale) + 'px';
     canvas.style.height = (GAME_H * scale) + 'px';
     canvas.style.margin = '0 auto';
   };
+
   window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
   setTimeout(fit, 50);
+  setTimeout(fit, 250);
 })();
 </script>
 </body>
