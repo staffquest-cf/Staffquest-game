@@ -7,36 +7,38 @@
 <title>StaffQuest</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;height:100%;overflow:hidden;background:#07070f;font-family:monospace}
-body{display:flex;flex-direction:column;align-items:center}
-#root{position:relative;width:100%;max-width:390px;height:100%;display:flex;flex-direction:column}
-#ga{position:relative;flex:1;min-height:0;overflow:hidden;background:#07070f}
+html,body{width:100%;height:100%;overflow:hidden;background:#050814;font-family:monospace}
+body{display:flex;justify-content:center;align-items:center}
+#root{position:relative;width:100%;max-width:430px;height:100%;display:flex;flex-direction:column}
+#ga{position:relative;flex:1;min-height:0;overflow:hidden;background:#050814}
 #ga canvas{display:block!important;image-rendering:pixelated;image-rendering:crisp-edges}
 
 #hud{
-  position:absolute;top:0;left:0;right:0;padding:6px 10px;pointer-events:none;z-index:20;
-  display:flex;justify-content:space-between;align-items:flex-start;gap:6px
+  position:absolute;top:0;left:0;right:0;padding:8px 10px;pointer-events:none;z-index:20;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:8px
 }
-.hb{background:rgba(5,13,36,.94);border:1px solid rgba(245,200,66,.3);border-radius:8px;padding:5px 9px}
+.hb{
+  background:rgba(5,13,36,.92);border:1px solid rgba(245,200,66,.28);
+  border-radius:8px;padding:5px 9px;box-shadow:0 2px 8px rgba(0,0,0,.25)
+}
 .hn{font-size:10px;font-weight:bold;color:#f5c842}
-.hx{font-size:8px;color:#5a9a5a;margin-top:2px}
-.xbar{background:#1a1a0a;border-radius:3px;height:4px;width:84px;margin-top:3px;overflow:hidden}
+.hx{font-size:8px;color:#7ad47a;margin-top:2px}
+.xbar{background:#1a1a0a;border-radius:3px;height:4px;width:84px;margin-top:4px;overflow:hidden}
 .xfill{height:100%;background:#f5c842;border-radius:3px;transition:width .35s}
-.hw{font-size:8px;color:#8888aa;text-align:right;line-height:1.7}
+.hw{font-size:8px;color:#8792c8;text-align:right;line-height:1.7}
 
 #toast{
-  position:absolute;bottom:100px;left:50%;transform:translateX(-50%);
-  background:rgba(0,0,0,.92);color:#ccc;font-size:9px;padding:6px 14px;border-radius:20px;
+  position:absolute;bottom:98px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,.92);color:#d9deeb;font-size:9px;padding:6px 14px;border-radius:20px;
   border:1px solid #2a2a3a;pointer-events:none;opacity:0;transition:opacity .3s;
   white-space:nowrap;z-index:15;max-width:90%;text-align:center
 }
 
-/* Dialog */
 #sage-ov{
   position:absolute;inset:0;z-index:40;display:none;flex-direction:column;justify-content:flex-end
 }
 #sage-ov.show{display:flex}
-#sage-bg{position:absolute;inset:0;background:rgba(0,0,0,.55)}
+#sage-bg{position:absolute;inset:0;background:rgba(0,0,0,.58)}
 #sage-box{position:relative;background:#07070f;border-top:3px solid #f5c842}
 #sage-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px 8px;border-bottom:1px solid rgba(245,200,66,.2)}
 #sage-face{
@@ -59,33 +61,6 @@ body{display:flex;flex-direction:column;align-items:center}
 .sage-btn[disabled]{cursor:default}
 #sage-prog{font-size:9px;color:#445577;text-align:center}
 
-/* Controls */
-#ctl{
-  position:absolute;bottom:6px;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;
-  padding:0 10px;z-index:12;pointer-events:none
-}
-#joy{width:88px;height:88px;pointer-events:auto;position:relative;touch-action:none}
-#jb{
-  position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.04);
-  border:1.5px solid rgba(255,255,255,.12)
-}
-#jk{
-  position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.14);
-  border:1.5px solid rgba(255,255,255,.26);top:50%;left:50%;transform:translate(-50%,-50%)
-}
-#bok{
-  width:54px;height:54px;border-radius:50%;background:rgba(245,200,66,.1);border:2px solid #f5c842;
-  pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  cursor:pointer;touch-action:none;transition:opacity .15s, transform .15s
-}
-#bok:active{transform:scale(.96)}
-#bok .ol{font-size:9px;font-weight:bold;color:#f5c842}
-#bok .oh{
-  font-size:7px;color:#555577;margin-top:1px;text-align:center;max-width:48px;
-  overflow:hidden;white-space:nowrap;text-overflow:ellipsis
-}
-
-/* Badge */
 #badge{
   position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(0);
   background:rgba(4,4,18,.97);border:2px solid #f5c842;border-radius:14px;padding:18px 24px;
@@ -96,7 +71,6 @@ body{display:flex;flex-direction:column;align-items:center}
 #badge .bt{font-size:12px;font-weight:bold;color:#f5c842}
 #badge .bs{font-size:9px;color:#aaa;margin-top:3px}
 
-/* Result */
 #result{
   position:absolute;inset:0;z-index:45;background:rgba(4,4,18,.97);display:none;
   flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:28px
@@ -110,6 +84,31 @@ body{display:flex;flex-direction:column;align-items:center}
   margin-top:6px;padding:12px 26px;border-radius:10px;background:rgba(245,200,66,.12);
   color:#f5c842;border:1px solid rgba(245,200,66,.35);font-size:13px;font-weight:bold;
   font-family:monospace;letter-spacing:2px;cursor:pointer;touch-action:manipulation
+}
+
+#ctl{
+  position:absolute;bottom:8px;left:0;right:0;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 10px;z-index:12;pointer-events:none
+}
+#joy{width:88px;height:88px;pointer-events:auto;position:relative;touch-action:none}
+#jb{
+  position:absolute;inset:0;border-radius:50%;background:rgba(255,255,255,.04);
+  border:1.5px solid rgba(255,255,255,.12)
+}
+#jk{
+  position:absolute;width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.14);
+  border:1.5px solid rgba(255,255,255,.26);top:50%;left:50%;transform:translate(-50%,-50%)
+}
+#bok{
+  width:56px;height:56px;border-radius:50%;background:rgba(245,200,66,.1);border:2px solid #f5c842;
+  pointer-events:auto;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  cursor:pointer;touch-action:none;transition:opacity .15s, transform .15s
+}
+#bok:active{transform:scale(.96)}
+#bok .ol{font-size:9px;font-weight:bold;color:#f5c842}
+#bok .oh{
+  font-size:7px;color:#6a78aa;margin-top:1px;text-align:center;max-width:48px;
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis
 }
 </style>
 </head>
@@ -181,15 +180,15 @@ body{display:flex;flex-direction:column;align-items:center}
 const TW = 16;
 const GW = 15;
 const GH = 24;
-const SCALE = 3;
+const SCALE = 2;
 const MAX_XP_BAR = 500;
 const STORAGE_KEYS = {
   user: 'sq_user',
-  progress: 'sq_progressi_v2'
+  progress: 'sq_progressi_v3'
 };
 
 /* =========================
-   MAP
+   BASE MAP
 ========================= */
 const CMAP = [
   [2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],
@@ -219,16 +218,16 @@ const CMAP = [
 ];
 
 /* =========================
-   DATA
+   GAME DATA
 ========================= */
 const ALL_MAPS = {
   Cameriere: [
-    { id: "ap",  label: "Apertura\nChiusura",    x: 50, y:  8, sz: 2, conn: ["sal"] },
-    { id: "sal", label: "Sala",                  x: 50, y: 22, sz: 2, conn: ["acc"] },
-    { id: "acc", label: "Accoglienza\nCassa",    x: 50, y: 38, sz: 2, conn: ["ven"] },
-    { id: "ven", label: "Vendita",               x: 50, y: 53, sz: 1, conn: ["pre", "rec"] },
-    { id: "pre", label: "Gestione\nPrenotazioni",x: 28, y: 70, sz: 1, conn: [] },
-    { id: "rec", label: "Reclami",               x: 72, y: 70, sz: 1, conn: [] }
+    { id: "ap",  label: "Apertura\nChiusura",     x: 50, y:  8, sz: 2, conn: ["sal"] },
+    { id: "sal", label: "Sala",                   x: 50, y: 22, sz: 2, conn: ["acc"] },
+    { id: "acc", label: "Accoglienza\nCassa",     x: 50, y: 38, sz: 2, conn: ["ven"] },
+    { id: "ven", label: "Vendita",                x: 50, y: 53, sz: 1, conn: ["pre", "rec"] },
+    { id: "pre", label: "Gestione\nPrenotazioni", x: 28, y: 70, sz: 1, conn: [] },
+    { id: "rec", label: "Reclami",                x: 72, y: 70, sz: 1, conn: [] }
   ],
   Cuoco: [
     { id: "ap",  label: "Apertura\nChiusura", x: 50, y:  7, sz: 2, conn: ["org"] },
@@ -525,14 +524,11 @@ const ALL_QUESTS = {
 };
 
 /* =========================
-   STORAGE + STATE
+   STORAGE / STATE
 ========================= */
 function safeParse(raw, fallback) {
-  try {
-    return raw ? JSON.parse(raw) : fallback;
-  } catch {
-    return fallback;
-  }
+  try { return raw ? JSON.parse(raw) : fallback; }
+  catch { return fallback; }
 }
 
 function loadStoredUser() {
@@ -583,17 +579,12 @@ function persistProgress() {
   localStorage.setItem(STORAGE_KEYS.progress, JSON.stringify(state.progress));
 }
 
-function setCompleted(nodeId, value = true) {
-  state.progress.completed[nodeId] = value;
-  persistProgress();
-}
-
 function isCompleted(nodeId) {
   return !!state.progress.completed[nodeId];
 }
 
-function setBadge(key) {
-  state.progress.badges[key] = true;
+function setCompleted(nodeId, value = true) {
+  state.progress.completed[nodeId] = value;
   persistProgress();
 }
 
@@ -601,12 +592,15 @@ function hasBadge(key) {
   return !!state.progress.badges[key];
 }
 
+function setBadge(key) {
+  state.progress.badges[key] = true;
+  persistProgress();
+}
+
 /* =========================
    UI HELPERS
 ========================= */
-function qs(id) {
-  return document.getElementById(id);
-}
+function qs(id) { return document.getElementById(id); }
 
 function updateHUD() {
   qs('hn').textContent = `${state.user.nome} · ${state.user.ruolo}`;
@@ -619,9 +613,7 @@ function toast(msg, dur = 2600) {
   el.textContent = msg;
   el.style.opacity = '1';
   clearTimeout(window.__sqToastTimer);
-  window.__sqToastTimer = setTimeout(() => {
-    el.style.opacity = '0';
-  }, dur);
+  window.__sqToastTimer = setTimeout(() => { el.style.opacity = '0'; }, dur);
 }
 
 function showBadge(icon, title, subtitle) {
@@ -631,39 +623,36 @@ function showBadge(icon, title, subtitle) {
   const el = qs('badge');
   el.classList.add('show');
   clearTimeout(window.__sqBadgeTimer);
-  window.__sqBadgeTimer = setTimeout(() => {
-    el.classList.remove('show');
-  }, 2600);
+  window.__sqBadgeTimer = setTimeout(() => { el.classList.remove('show'); }, 2600);
 }
 
 function checkBadgeUnlocks() {
   if (state.user.xp >= 100 && !hasBadge('bdg1')) {
     setBadge('bdg1');
-    setTimeout(() => showBadge('🥉', 'Badge Bronzo', 'Prime sfide superate'), 400);
+    setTimeout(() => showBadge('🥉', 'Badge Bronzo', 'Prime sfide superate'), 350);
   }
   if (state.user.xp >= 250 && !hasBadge('bdg2')) {
     setBadge('bdg2');
-    setTimeout(() => showBadge('🥈', 'Badge Argento', 'Stai crescendo'), 400);
+    setTimeout(() => showBadge('🥈', 'Badge Argento', 'Stai crescendo'), 350);
   }
   if (state.user.xp >= 500 && !hasBadge('bdg3')) {
     setBadge('bdg3');
-    setTimeout(() => showBadge('🥇', 'Badge Oro', 'Maestro del dungeon'), 400);
+    setTimeout(() => showBadge('🥇', 'Badge Oro', 'Maestro del dungeon'), 350);
   }
 }
 
 function closeResult() {
   qs('result').classList.remove('show');
 }
-
 qs('btn-res').addEventListener('click', closeResult);
 
 /* =========================
-   DIALOG / QUIZ
+   QUIZ / SAGE
 ========================= */
 function openSage(nodeId) {
   const quest = ALL_QUESTS[nodeId];
   if (!quest) {
-    toast('Quest non trovata');
+    toast('Quiz non trovato');
     return;
   }
 
@@ -750,18 +739,14 @@ function finishSageQuiz() {
 
   if (passed) {
     state.user.xp += xpGain;
-    setCompleted(state.ui.currentNodeId, true);
     persistUser();
+    setCompleted(state.ui.currentNodeId, true);
     updateHUD();
     checkBadgeUnlocks();
-
-    if (state.gameScene) {
-      state.gameScene.refreshNodes();
-    }
+    if (state.gameScene) state.gameScene.refreshNodes();
   }
 
-  const icon = percentage === 100 ? '🏆' : passed ? '⭐' : '😅';
-  qs('res-icon').textContent = icon;
+  qs('res-icon').textContent = percentage === 100 ? '🏆' : passed ? '⭐' : '😅';
   qs('res-title').textContent = passed ? 'Superato!' : 'Riprova!';
   qs('res-xp').textContent = `${correct}/${total} corrette${passed ? ` · +${xpGain} XP` : ''}`;
   qs('res-msg').textContent = passed
@@ -770,18 +755,13 @@ function finishSageQuiz() {
   qs('result').classList.add('show');
 }
 
-qs('sage-bg').addEventListener('click', () => {
-  // overlay chiudibile solo se vuoi
-  // volutamente non fa nulla per evitare chiusure accidentali
-});
-
 /* =========================
    SAGE FACE
 ========================= */
 const sageFace = {
   timer: null,
   frame: 0,
-  drawFallback() {
+  draw() {
     const c = qs('sage-canvas');
     const ctx = c.getContext('2d');
     ctx.clearRect(0, 0, 48, 48);
@@ -804,53 +784,38 @@ const sageFace = {
 
     const mouthY = this.frame % 2 === 0 ? 25 : 24;
     ctx.fillRect(21, mouthY, 6, 2);
-
     this.frame++;
   },
   start() {
     this.stop();
-    this.drawFallback();
-    this.timer = setInterval(() => this.drawFallback(), 200);
+    this.draw();
+    this.timer = setInterval(() => this.draw(), 200);
   },
   stop() {
     if (this.timer) clearInterval(this.timer);
     this.timer = null;
   }
 };
-
 sageFace.start();
 window.addEventListener('beforeunload', () => sageFace.stop());
 
 /* =========================
-   VALIDATION
+   DATA VALIDATION
 ========================= */
-function validateData() {
-  const nodeIds = new Set();
-
-  Object.values(ALL_MAPS).forEach(roleNodes => {
-    roleNodes.forEach(node => {
-      nodeIds.add(node.id);
+(function validateData() {
+  Object.entries(ALL_MAPS).forEach(([role, nodes]) => {
+    nodes.forEach(node => {
       if (!ALL_QUESTS[node.id]) {
-        console.warn('Nodo senza quiz:', node.id);
+        console.warn(`Nodo ${node.id} senza quiz nel ruolo ${role}`);
       }
       node.conn.forEach(target => {
-        if (!roleNodes.some(n => n.id === target)) {
-          console.warn(`Connessione non valida da ${node.id} a ${target}`);
+        if (!nodes.some(n => n.id === target)) {
+          console.warn(`Connessione non valida: ${node.id} -> ${target}`);
         }
       });
     });
   });
-
-  Object.entries(ALL_QUESTS).forEach(([id, quest]) => {
-    if (!nodeIds.has(id)) {
-      console.warn('Quiz senza nodo:', id);
-    }
-    if (!quest.quiz || !Array.isArray(quest.quiz) || quest.quiz.length === 0) {
-      console.warn('Quiz vuoto:', id);
-    }
-  });
-}
-validateData();
+})();
 
 /* =========================
    PHASER SCENE
@@ -865,13 +830,12 @@ class DungeonScene extends Phaser.Scene {
     this.nodeGfx = {};
     this.doorInteract = [];
     this.torches = [];
-    this.playerUsesFallback = false;
+    this.decorations = [];
     this._handlers = [];
     this.walkFrame = 0;
     this.idleFrame = 0;
     this.animTimer = 0;
     this.torchTimer = 0;
-    this.torchPulse = 0;
   }
 
   preload() {
@@ -880,7 +844,7 @@ class DungeonScene extends Phaser.Scene {
 
     const prog = this.add.graphics();
     const bg = this.add.rectangle(W / 2, H / 2, W, H, 0x07070f);
-    const txt = this.add.text(W / 2, H / 2 - 16, 'Carico il dungeon...', {
+    const txt = this.add.text(W / 2, H / 2 - 16, 'Carico StaffQuest...', {
       fontSize: '9px',
       color: '#f5c842',
       fontFamily: 'monospace'
@@ -889,9 +853,9 @@ class DungeonScene extends Phaser.Scene {
     const drawProgress = (v) => {
       prog.clear();
       prog.fillStyle(0x1a1a2e);
-      prog.fillRect(W / 2 - 80, H / 2 + 8, 160, 12);
+      prog.fillRect(W/2 - 80, H/2 + 8, 160, 12);
       prog.fillStyle(0xf5c842);
-      prog.fillRect(W / 2 - 80, H / 2 + 8, 160 * v, 12);
+      prog.fillRect(W/2 - 80, H/2 + 8, 160 * v, 12);
     };
 
     this.load.on('progress', drawProgress);
@@ -902,9 +866,21 @@ class DungeonScene extends Phaser.Scene {
       this.load.off('progress', drawProgress);
     });
 
-    // asset opzionali
-    this.load.spritesheet('wf', 'assets/walls_floor.png', { frameWidth: TW, frameHeight: TW });
-    this.load.spritesheet('fire', 'assets/fire_animation2.png', { frameWidth: TW, frameHeight: TW });
+    this.load.spritesheet('wallsFloor', 'assets/walls_floor.png', {
+      frameWidth: 16, frameHeight: 16
+    });
+    this.load.spritesheet('doorsChest', 'assets/doors_lever_chest_animation.png', {
+      frameWidth: 16, frameHeight: 16
+    });
+    this.load.spritesheet('fire2', 'assets/fire_animation2.png', {
+      frameWidth: 16, frameHeight: 16
+    });
+    this.load.spritesheet('objects', 'assets/Objects.png', {
+      frameWidth: 16, frameHeight: 16
+    });
+    this.load.spritesheet('cracksFloor', 'assets/decorative_cracks_floor.png', {
+      frameWidth: 16, frameHeight: 16
+    });
 
     for (let i = 0; i < 30; i++) {
       const num = String(i).padStart(3, '0');
@@ -920,7 +896,7 @@ class DungeonScene extends Phaser.Scene {
     state.gameScene = this;
     this.nodes = ALL_MAPS[state.user.ruolo] || ALL_MAPS.Cameriere;
 
-    this.createFallbackPlayerTexture();
+    this.createAnims();
     this.buildFloor();
     this.buildNodes();
     this.spawnPlayer();
@@ -933,55 +909,33 @@ class DungeonScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, GW * TW, GH * TW);
 
     updateHUD();
-    setTimeout(() => {
-      toast('Avvicinati a una porta e premi OK per iniziare il quiz');
-    }, 700);
+    setTimeout(() => toast('Avvicinati a una porta e premi OK per iniziare il quiz'), 700);
 
-    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
-      this.cleanupHandlers();
-    });
-
-    this.events.once(Phaser.Scenes.Events.DESTROY, () => {
-      this.cleanupHandlers();
-    });
+    this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => this.cleanupHandlers());
+    this.events.once(Phaser.Scenes.Events.DESTROY, () => this.cleanupHandlers());
   }
 
-  createFallbackPlayerTexture() {
-    if (this.textures.exists('player_fallback')) return;
-    const g = this.make.graphics({ x: 0, y: 0, add: false });
-
-    g.fillStyle(0x1b2143);
-    g.fillRect(4, 2, 8, 3);
-
-    g.fillStyle(0xf0c89a);
-    g.fillRect(4, 5, 8, 6);
-
-    g.fillStyle(0x2c5aa0);
-    g.fillRect(3, 11, 10, 5);
-
-    g.fillStyle(0x111111);
-    g.fillRect(4, 17, 3, 3);
-    g.fillRect(9, 17, 3, 3);
-
-    g.generateTexture('player_fallback', 16, 20);
-    g.destroy();
-  }
-
-  hasPlayerAssets() {
-    return this.textures.exists('idle_0');
-  }
-
-  hasFloorAssets() {
-    return this.textures.exists('wf');
-  }
-
-  hasFireAssets() {
-    return this.textures.exists('fire');
+  createAnims() {
+    if (!this.anims.exists('torchLoop')) {
+      this.anims.create({
+        key: 'torchLoop',
+        frames: this.anims.generateFrameNumbers('fire2', { start: 0, end: 5 }),
+        frameRate: 10,
+        repeat: -1
+      });
+    }
   }
 
   buildFloor() {
-    const FLOOR_FRAMES = [42, 55, 56, 57, 58, 59];
-    const WALL_FRAMES = [0, 1, 2, 3, 13, 14, 15, 91, 104];
+    const FLOOR_FRAMES = [42, 43, 55, 56];
+    const WALL_FRAMES  = [0, 1, 13, 14];
+    const CRACK_FRAMES = [0, 1, 2, 8, 9, 10];
+    const OBJECTS = [
+      { c: 2,  r: 2,  frame: 50 },
+      { c: 12, r: 2,  frame: 50 },
+      { c: 2,  r: 21, frame: 26 },
+      { c: 12, r: 21, frame: 26 }
+    ];
 
     const rng = ((seed) => {
       let x = seed >>> 0;
@@ -989,51 +943,35 @@ class DungeonScene extends Phaser.Scene {
         x = (x * 1664525 + 1013904223) >>> 0;
         return x;
       };
-    })(99);
+    })(1337);
 
     for (let row = 0; row < GH; row++) {
       for (let col = 0; col < GW; col++) {
-        const cell = CMAP[row][col];
         const x = col * TW + TW / 2;
         const y = row * TW + TW / 2;
+        const isWall = CMAP[row][col] === 2;
 
-        if (this.hasFloorAssets()) {
-          const frame = cell === 2
-            ? WALL_FRAMES[rng() % WALL_FRAMES.length]
-            : FLOOR_FRAMES[rng() % FLOOR_FRAMES.length];
-
-          this.add.image(x, y, 'wf', frame).setDepth(0);
+        if (isWall) {
+          const frame = WALL_FRAMES[rng() % WALL_FRAMES.length];
+          this.add.image(x, y, 'wallsFloor', frame).setDepth(0);
         } else {
-          const g = this.add.graphics().setDepth(0);
+          const frame = FLOOR_FRAMES[rng() % FLOOR_FRAMES.length];
+          this.add.image(x, y, 'wallsFloor', frame).setDepth(0);
 
-          if (cell === 2) {
-            g.fillStyle(0x171726);
-            g.fillRect(x - 8, y - 8, 16, 16);
-            g.fillStyle(0x22223a);
-            g.fillRect(x - 8, y - 8, 16, 3);
-            g.fillStyle(0x2a2a45);
-            g.fillRect(x - 7, y - 5, 14, 12);
-          } else {
-            g.fillStyle(0x151b2e);
-            g.fillRect(x - 8, y - 8, 16, 16);
-            g.fillStyle(0x182139);
-            g.fillRect(x - 8, y - 8, 16, 16);
-            g.fillStyle(0x1d2947);
-            g.fillRect(x - 7, y - 7, 14, 14);
+          if ((rng() % 100) < 7) {
+            const crack = CRACK_FRAMES[rng() % CRACK_FRAMES.length];
+            this.add.image(x, y, 'cracksFloor', crack)
+              .setDepth(0.4)
+              .setAlpha(0.28);
           }
         }
       }
     }
 
-    [[2,2],[12,2],[2,21],[12,21]].forEach(([c, r]) => {
-      const g = this.add.graphics().setDepth(2);
-      const x = c * TW + TW / 2;
-      const y = r * TW + TW / 2;
-      g.fillStyle(0x6b3311);
-      g.fillRect(x - 5, y - 8, 10, 16);
-      g.fillStyle(0xc8921a);
-      g.fillRect(x - 5, y - 4, 10, 2);
-      g.fillRect(x - 5, y + 2, 10, 2);
+    OBJECTS.forEach(obj => {
+      const x = obj.c * TW + TW / 2;
+      const y = obj.r * TW + TW / 2;
+      this.add.image(x, y, 'objects', obj.frame).setDepth(2);
     });
   }
 
@@ -1052,61 +990,57 @@ class DungeonScene extends Phaser.Scene {
       };
     });
 
-    const cg = this.add.graphics().setDepth(1);
+    const cg = this.add.graphics().setDepth(1.5);
     this.nodes.forEach(n => {
       const p1 = this.nodePixels[n.id];
       n.conn.forEach(cid => {
         const p2 = this.nodePixels[cid];
         if (!p2) return;
 
-        cg.lineStyle(14, 0x1a2a4a, 1);
+        cg.lineStyle(10, 0x1f3457, 1);
         cg.lineBetween(p1.x, p1.y, p2.x, p2.y);
-        cg.lineStyle(10, 0x808aa3, 0.28);
+        cg.lineStyle(6, 0x6c88b0, 0.18);
         cg.lineBetween(p1.x, p1.y, p2.x, p2.y);
-        cg.lineStyle(3, 0xc0c8e0, 0.1);
-        cg.lineBetween(p1.x, p1.y, p2.x, p2.y);
-
-        const mx = (p1.x + p2.x) / 2;
-        const my = (p1.y + p2.y) / 2;
-        cg.fillStyle(0xf5c842, 0.2);
-        cg.fillCircle(mx, my, 2);
       });
     });
 
     this.nodes.forEach(n => {
       const p = this.nodePixels[n.id];
       const done = isCompleted(n.id);
-      const sz = n.sz === 2 ? 18 : 13;
+      const scale = n.sz === 2 ? 1.15 : 1;
+      const glowRadius = n.sz === 2 ? 16 : 13;
 
-      const doorGraphics = this.add.graphics().setDepth(3);
-      this.drawDoor(doorGraphics, p.x, p.y, sz, done);
+      const glow = this.add.graphics().setDepth(2.8);
+      glow.fillStyle(done ? 0x2ecc71 : 0xf5c842, done ? 0.07 : 0.05);
+      glow.fillCircle(p.x, p.y, glowRadius);
 
-      const labelText = this.add.text(p.x, p.y - sz - 8, n.label, {
-        fontSize: '5px',
+      const doorFrame = done ? 21 : 20;
+      const door = this.add.image(p.x, p.y, 'doorsChest', doorFrame)
+        .setDepth(3)
+        .setScale(scale);
+
+      const label = this.add.text(p.x, p.y - (n.sz === 2 ? 15 : 12), n.label, {
+        fontSize: '4px',
         color: done ? '#2ecc71' : '#f5c842',
         fontFamily: 'monospace',
         align: 'center',
-        backgroundColor: 'rgba(5,13,36,0.88)',
-        padding: { x: 3, y: 2 }
+        backgroundColor: 'rgba(5,13,36,0.80)',
+        padding: { x: 2, y: 1 }
       }).setOrigin(0.5, 1).setDepth(4);
 
       this.nodeGfx[n.id] = {
-        g: doorGraphics,
-        x: p.x,
-        y: p.y,
-        sz,
-        isDone: done,
-        labelText
+        glow, door, label,
+        x: p.x, y: p.y,
+        sz: n.sz === 2 ? 18 : 13,
+        isDone: done
       };
 
       if (n.sz === 2 && !done) {
-        if (this.hasFireAssets()) {
-          const t = this.add.image(p.x + sz + 5, p.y, 'fire', 0).setDepth(4).setScale(0.85);
-          this.torches.push({ type: 'sprite', ref: t });
-        } else {
-          const glow = this.add.graphics().setDepth(4);
-          this.torches.push({ type: 'gfx', ref: glow, x: p.x + sz + 5, y: p.y });
-        }
+        const torch = this.add.sprite(p.x + 18, p.y, 'fire2', 0)
+          .setDepth(4)
+          .setScale(0.9);
+        torch.play('torchLoop');
+        this.torches.push(torch);
       }
 
       this.doorInteract.push({
@@ -1114,47 +1048,9 @@ class DungeonScene extends Phaser.Scene {
         y: p.y,
         id: n.id,
         lbl: n.label.replace(/\n/g, ' '),
-        sz
+        sz: n.sz === 2 ? 18 : 13
       });
     });
-  }
-
-  drawDoor(g, x, y, sz, done) {
-    g.clear();
-    const doorColor = done ? 0x1a5c30 : 0x7a3311;
-    const accentColor = done ? 0x2ecc71 : 0xD4A520;
-
-    g.fillStyle(0x1a1a2e);
-    g.fillRect(x - sz - 3, y - sz * 1.4 - 3, sz * 2 + 6, sz * 2.8 + 6);
-
-    g.fillStyle(0x2a3a5a);
-    g.fillRect(x - sz - 1, y - sz * 1.4 - 1, sz * 2 + 2, sz * 2.8 + 2);
-
-    g.fillStyle(doorColor);
-    g.fillRect(x - sz, y - sz * 1.4, sz * 2, sz * 2.8);
-
-    g.fillStyle(0x000000, 0.2);
-    g.fillRect(x - sz + 2, y - sz * 1.4 + 2, sz * 2 - 4, sz * 1.3);
-    g.fillRect(x - sz + 2, y - sz * 1.4 + sz * 1.4 + 1, sz * 2 - 4, sz * 1.2);
-
-    g.fillStyle(accentColor);
-    g.fillCircle(x + sz - 4, y, 2.5);
-
-    g.fillStyle(0x3a4a6a);
-    g.fillRect(x - sz - 1, y - sz * 1.4 - 5, sz * 2 + 2, 5);
-
-    if (!done) {
-      g.fillStyle(0xf5c842, 0.06);
-      g.fillCircle(x, y, sz * 2.2);
-    }
-
-    if (done) {
-      g.fillStyle(0x2ecc71, 0.85);
-      g.fillCircle(x, y - sz + 4, 4);
-      g.fillStyle(0xffffff, 0.9);
-      g.fillRect(x - 1, y - sz + 2, 1.5, 3.5);
-      g.fillRect(x + 0.5, y - sz + 4, 2.5, -2);
-    }
   }
 
   refreshNodes() {
@@ -1162,11 +1058,13 @@ class DungeonScene extends Phaser.Scene {
       const info = this.nodeGfx[n.id];
       if (!info) return;
 
-      const done = isCompleted(n.id);
-      if (done && !info.isDone) {
+      if (!info.isDone && isCompleted(n.id)) {
         info.isDone = true;
-        this.drawDoor(info.g, info.x, info.y, info.sz, true);
-        info.labelText.setColor('#2ecc71');
+        info.door.setFrame(21);
+        info.label.setColor('#2ecc71');
+        info.glow.clear();
+        info.glow.fillStyle(0x2ecc71, 0.07);
+        info.glow.fillCircle(info.x, info.y, n.sz === 2 ? 16 : 13);
       }
     });
   }
@@ -1176,19 +1074,11 @@ class DungeonScene extends Phaser.Scene {
     const sx = first ? first.x : GW * TW / 2;
     const sy = first ? first.y + TW * 3 : GH * TW / 2;
 
-    const textureKey = this.hasPlayerAssets() ? 'idle_0' : 'player_fallback';
-    this.playerUsesFallback = !this.hasPlayerAssets();
-
-    this.pp = this.physics.add.sprite(sx, sy, textureKey)
+    this.pp = this.physics.add.sprite(sx, sy, 'idle_0')
+      .setDisplaySize(18, 22)
       .setCollideWorldBounds(true)
       .setMaxVelocity(90, 90)
       .setDepth(10);
-
-    if (this.playerUsesFallback) {
-      this.pp.setDisplaySize(18, 22);
-    } else {
-      this.pp.setDisplaySize(18, 22);
-    }
 
     this.ptag = this.add.text(sx, sy, state.user.nome, {
       fontSize: '5px',
@@ -1276,10 +1166,7 @@ class DungeonScene extends Phaser.Scene {
       e.preventDefault();
       this.interact();
     };
-
-    const onMouse = () => {
-      this.interact();
-    };
+    const onMouse = () => this.interact();
 
     btn.addEventListener('touchstart', onTouch, { passive: false });
     btn.addEventListener('mousedown', onMouse);
@@ -1303,24 +1190,22 @@ class DungeonScene extends Phaser.Scene {
   canMoveTo(nextX, nextY) {
     const halfW = 5;
     const halfH = 6;
-
-    const pts = [
+    const points = [
       { x: nextX - halfW, y: nextY - halfH },
       { x: nextX + halfW, y: nextY - halfH },
       { x: nextX - halfW, y: nextY + halfH },
       { x: nextX + halfW, y: nextY + halfH }
     ];
 
-    return pts.every(p => {
-      const c = Math.floor(p.x / TW);
-      const r = Math.floor(p.y / TW);
-      return !this.isWall(c, r);
+    return points.every(p => {
+      const col = Math.floor(p.x / TW);
+      const row = Math.floor(p.y / TW);
+      return !this.isWall(col, row);
     });
   }
 
   getMovementVector() {
-    let x = 0;
-    let y = 0;
+    let x = 0, y = 0;
 
     if (this.curs.left.isDown || this.wk.lt.isDown) x -= 1;
     if (this.curs.right.isDown || this.wk.rt.isDown) x += 1;
@@ -1343,54 +1228,15 @@ class DungeonScene extends Phaser.Scene {
 
   interact() {
     if (state.ui.sageOpen || !this.near) return;
-
     if (isCompleted(this.near.id)) {
       toast('Stanza già completata');
       return;
     }
-
     openSage(this.near.id);
-  }
-
-  updateTorches(delta) {
-    this.torchTimer += delta;
-    this.torchPulse += delta * 0.01;
-
-    if (this.hasFireAssets()) {
-      if (this.torchTimer > 120) {
-        this.torchTimer = 0;
-        this.torches.forEach(t => {
-          if (t.type === 'sprite') {
-            const cur = t.ref.frame.name || 0;
-            t.ref.setFrame((Number(cur) + 1) % 6);
-          }
-        });
-      }
-    } else {
-      this.torches.forEach(t => {
-        if (t.type !== 'gfx') return;
-        const g = t.ref;
-        const flick = 4 + Math.sin(this.torchPulse + t.x * 0.07) * 1.2;
-        g.clear();
-        g.fillStyle(0xf5c842, 0.18);
-        g.fillCircle(t.x, t.y, flick + 4);
-        g.fillStyle(0xffa500, 0.7);
-        g.fillCircle(t.x, t.y, flick);
-        g.fillStyle(0xfff2b2, 0.9);
-        g.fillCircle(t.x, t.y - 1, Math.max(1.5, flick * 0.45));
-      });
-    }
   }
 
   updatePlayerAnimation(vx, vy, delta) {
     const moving = vx !== 0 || vy !== 0;
-
-    if (this.playerUsesFallback) {
-      this.pp.setFlipX(vx < 0);
-      this.pp.setScale(moving ? 1.02 : 1);
-      return;
-    }
-
     this.animTimer += delta;
 
     if (moving) {
@@ -1398,9 +1244,7 @@ class DungeonScene extends Phaser.Scene {
         this.animTimer = 0;
         this.walkFrame = (this.walkFrame + 1) % 30;
         const key = 'walk_' + this.walkFrame;
-        if (this.textures.exists(key)) {
-          this.pp.setTexture(key);
-        }
+        if (this.textures.exists(key)) this.pp.setTexture(key);
       }
       this.pp.setFlipX(vx < 0);
     } else {
@@ -1408,9 +1252,7 @@ class DungeonScene extends Phaser.Scene {
         this.animTimer = 0;
         this.idleFrame = (this.idleFrame + 1) % 8;
         const key = 'idle_' + this.idleFrame;
-        if (this.textures.exists(key)) {
-          this.pp.setTexture(key);
-        }
+        if (this.textures.exists(key)) this.pp.setTexture(key);
       }
       this.pp.setFlipX(false);
     }
@@ -1418,12 +1260,12 @@ class DungeonScene extends Phaser.Scene {
 
   updateNearbyDoor() {
     let near = null;
-    let nearestDist = Infinity;
+    let nearest = Infinity;
 
     this.doorInteract.forEach(obj => {
       const d = Phaser.Math.Distance.Between(this.pp.x, this.pp.y, obj.x, obj.y);
-      if (d < (obj.sz * 2 + 10) && d < nearestDist) {
-        nearestDist = d;
+      if (d < (obj.sz * 2 + 10) && d < nearest) {
+        nearest = d;
         near = obj;
       }
     });
@@ -1437,8 +1279,6 @@ class DungeonScene extends Phaser.Scene {
   }
 
   update(time, delta) {
-    this.updateTorches(delta);
-
     if (state.ui.sageOpen) {
       this.pp.setVelocity(0, 0);
       return;
@@ -1478,7 +1318,7 @@ updateHUD();
 new Phaser.Game({
   type: Phaser.AUTO,
   parent: 'ga',
-  backgroundColor: '#07070f',
+  backgroundColor: '#050814',
   physics: {
     default: 'arcade',
     arcade: {
